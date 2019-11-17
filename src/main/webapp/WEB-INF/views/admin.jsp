@@ -90,6 +90,53 @@
             <li class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-desktop"></i>
+                    <span class="menu-text">训练准备</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="">
+                        <a class="popstyle" href="/sys/training/training.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            训练计划管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/role/role.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            组训人员管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/aclModule/acl.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            参训人员管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/log/log.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            弹药管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/log/log.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            器械保障
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-desktop"></i>
                     <span class="menu-text"> 权限管理 </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -127,6 +174,9 @@
                     </li>
                 </ul>
             </li>
+
+
+
 
             <li class="">
                 <a href="#" class="dropdown-toggle">
@@ -233,16 +283,16 @@
         $(".popstyle").click(function () {
             var $this = $(this)
             $("iframe").attr(
-                    'src',
-                    $this.attr("data")
+                'src',
+                $this.attr("data")
             );
         });
 
         $(".direct").click(function () {
             var $this = $(this)
             $("iframe").attr(
-                    'src',
-                    $this.attr("data-value")
+                'src',
+                $this.attr("data-value")
             );
         });
     });
