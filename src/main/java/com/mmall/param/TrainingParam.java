@@ -23,6 +23,7 @@ public class TrainingParam {
     @Length(min = 1, max = 50, message = "用户名长度需要在50个字以内")
     private String title;
     private String orgDept;
+    private String trainigId;
     private Integer traineeNumber;
     private String dot;
     private String addr;

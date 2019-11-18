@@ -8,14 +8,15 @@
     <result column="mail" property="mail" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="dept_id" property="deptId" jdbcType="INTEGER" />
+    <result column="training_id" property="trainingId" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="operator" property="operator" jdbcType="VARCHAR" />
     <result column="operate_time" property="operateTime" jdbcType="TIMESTAMP" />
     <result column="operate_ip" property="operateIp" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, username, telephone, mail, password, dept_id, status, remark, operator, operate_time, 
+  <sql id="Base_Column_List">
+    id, username, telephone, mail, password, dept_id,training_id, status, remark, operator, operate_time,
     operate_ip
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -30,11 +31,9 @@
   </delete>
   <insert id="insert" parameterType="com.mmall.model.SysUser" >
     insert into sys_user (id, username, telephone, 
-      mail, password, dept_id, 
-      status, remark, operator, 
-      operate_time, operate_ip)
+      mail, password, dept_id, training_id,status, remark, operator, operate_time, operate_ip)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{mail,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER}, 
+      #{mail,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER}, #{trainingId,jdbcType=INTEGER},
       #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
       #{operateTime,jdbcType=TIMESTAMP}, #{operateIp,jdbcType=VARCHAR})
   </insert>
@@ -58,6 +57,9 @@
       </if>
       <if test="deptId != null" >
         dept_id,
+      </if>
+      <if test="trainingId != null" >
+        training_Id,
       </if>
       <if test="status != null" >
         status,
@@ -93,6 +95,9 @@
       </if>
       <if test="deptId != null" >
         #{deptId,jdbcType=INTEGER},
+      </if>
+      <if test="trainingId != null" >
+        #{trainingId,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
@@ -193,10 +198,39 @@
     WHERE dept_id = #{deptId}
   </select>
 
+  <select id="countByTrainingId" parameterType="int" resultType="int">
+    SELECT count(1)
+    FROM sys_user
+    WHERE training_id = #{trainingId}
+  </select>
+
+  <select id="countByDeptandTrainingId" parameterType="int" resultType="int">
+    SELECT count(1)
+    FROM sys_user
+    WHERE training_id = #{trainingId} and dept_id=#{deptId}
+  </select>
+
   <select id="getPageByDeptId" parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     FROM sys_user
     WHERE dept_id = #{deptId}
+    ORDER BY username ASC
+    LIMIT #{page.offset}, #{page.pageSize}
+  </select>
+
+  <select id="getPageByTrainingId" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM sys_user
+    WHERE training_id = #{trainingId}
+    ORDER BY username ASC
+    LIMIT #{page.offset}, #{page.pageSize}
+  </select>
+
+
+  <select id="getPageByDeptandTrainingId" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM sys_user
+    WHERE training_id = #{trainingId} and dept_id=#{deptId}
     ORDER BY username ASC
     LIMIT #{page.offset}, #{page.pageSize}
   </select>

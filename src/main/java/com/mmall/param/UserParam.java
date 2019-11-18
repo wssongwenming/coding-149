@@ -30,6 +30,9 @@ public class UserParam {
     @NotNull(message = "必须提供用户所在的部门")
     private Integer deptId;
 
+    @NotNull(message = "必须提供用户所在的训练计划")
+    private Integer trainingId;
+
     @NotNull(message = "必须指定用户的状态")
     @Min(value = 0, message = "用户状态不合法")
     @Max(value = 2, message = "用户状态不合法")

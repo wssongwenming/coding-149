@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mmall.beans.PageQuery;
 import com.mmall.beans.PageResult;
 import com.mmall.common.RequestHolder;
+import com.mmall.dao.SysUserMapper;
 import com.mmall.dao.TrainingMapper;
 import com.mmall.exception.ParamException;
 import com.mmall.model.SysDept;
@@ -27,6 +28,9 @@ public class TrainingService {
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     @Resource
     private TrainingMapper trainingMapper;
+
+    @Resource
+    private SysUserMapper sysUserMapper;
 
     @Resource
     private SysLogService sysLogService;
@@ -55,6 +59,10 @@ public class TrainingService {
     public void delete(int trainingId) {
         Training training = trainingMapper.selectByPrimaryKey(trainingId);
         Preconditions.checkNotNull(training, "待删除的训练计划不存在，无法删除");
+
+        if (sysUserMapper.countByTrainingId(trainingId) > 0) {//检查当前训练计划下有没有系统用户(sys_user)
+            throw new ParamException("当前训练计划下有关联的系统用户，无法删除");
+        }
         //TODO 删除时判断有没有依赖数据
         /*if (sysDeptMapper.countByParentId(dept.getId()) > 0) {
             throw new ParamException("当前部门下面有子部门，无法删除");

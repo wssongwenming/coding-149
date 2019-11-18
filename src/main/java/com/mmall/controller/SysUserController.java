@@ -48,12 +48,29 @@ public class SysUserController {
         return JsonData.success();
     }
 
-    @RequestMapping("/page.json")
+    @RequestMapping("/page.json")//以部门过滤用户
     @ResponseBody
     public JsonData page(@RequestParam("deptId") int deptId, PageQuery pageQuery) {
         PageResult<SysUser> result = sysUserService.getPageByDeptId(deptId, pageQuery);
         return JsonData.success(result);
     }
+
+
+    @RequestMapping("/pageByAll.json")//以训练计划和部门两个条件过滤用户
+    @ResponseBody
+    public JsonData pageByAll(@RequestParam("deptId") int deptId,@RequestParam("trainingId") int trainingId, PageQuery pageQuery) {
+        PageResult<SysUser> result = sysUserService.getPageByDeptandTrainingId(deptId,trainingId, pageQuery);
+        return JsonData.success(result);
+    }
+
+
+    @RequestMapping("/pageByTrainingId.json")//以训练计划过滤用户
+    @ResponseBody
+    public JsonData pageByTrainingId(@RequestParam("trainingId") int trainingId, PageQuery pageQuery) {
+        PageResult<SysUser> result = sysUserService.getPageByTrainingId(trainingId, pageQuery);
+        return JsonData.success(result);
+    }
+
 
     @RequestMapping("/acls.json")
     @ResponseBody
@@ -62,5 +79,11 @@ public class SysUserController {
         map.put("acls", sysTreeService.userAclTree(userId));
         map.put("roles", sysRoleService.getRoleListByUserId(userId));
         return JsonData.success(map);
+    }
+    @RequestMapping("/delete.json")
+    @ResponseBody
+    public JsonData delete(@RequestParam("id") int id) {
+        sysUserService.deleteById(id);
+        return JsonData.success();
     }
 }

@@ -44,8 +44,8 @@
                                     <option value="100">100</option>
                                 </select> 条记录 </label>
 
+                            </div>
                         </div>
-                    </div>
                     <table id="dynamic-table" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid"
                            aria-describedby="dynamic-table_info" style="font-size:14px">
                         <thead>
@@ -75,9 +75,9 @@
                     </table>
                     <div class="row" id="trainingPage">
                     </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+             </div>
     </div>
 </div>
 

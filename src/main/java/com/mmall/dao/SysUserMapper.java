@@ -27,7 +27,15 @@ public interface SysUserMapper {
 
     int countByDeptId(@Param("deptId") int deptId);
 
+    int countByTrainingId(@Param("trainingId") int trainingId);
+
+    int countByDeptandTrainingId(@Param("deptId") int deptId,@Param("trainingId") int trainingId);
+
     List<SysUser> getPageByDeptId(@Param("deptId") int deptId, @Param("page") PageQuery page);
+
+    List<SysUser> getPageByTrainingId(@Param("trainingId") int trainingId, @Param("page") PageQuery page);
+
+    List<SysUser> getPageByDeptandTrainingId(@Param("deptId") int deptId,@Param("trainingId") int trainingId, @Param("page") PageQuery page);
 
     List<SysUser> getByIdList(@Param("idList") List<Integer> idList);
 

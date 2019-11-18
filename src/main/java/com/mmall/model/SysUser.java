@@ -24,6 +24,8 @@ public class SysUser {
 
     private Integer deptId;
 
+    private Integer trainingId;
+
     private Integer status;
 
     private String remark;
@@ -120,5 +122,13 @@ public class SysUser {
 
     public void setOperateIp(String operateIp) {
         this.operateIp = operateIp == null ? null : operateIp.trim();
+    }
+
+    public Integer getTrainingId() {
+        return trainingId;
+    }
+
+    public void setTrainingId(Integer trainingId) {
+        this.trainingId = trainingId;
     }
 }

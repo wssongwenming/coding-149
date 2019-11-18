@@ -128,7 +128,7 @@
   <select id="getPage" parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     FROM training
-    ORDER BY id ASC
+    ORDER BY id DESC
     LIMIT #{page.offset}, #{page.pageSize}
   </select>
 
