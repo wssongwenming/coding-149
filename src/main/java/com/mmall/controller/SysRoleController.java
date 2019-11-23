@@ -12,6 +12,7 @@ import com.mmall.service.SysRoleUserService;
 import com.mmall.service.SysTreeService;
 import com.mmall.service.SysUserService;
 import com.mmall.util.StringUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/sys/role")
 public class SysRoleController {
+
 
     @Resource
     private SysRoleService sysRoleService;

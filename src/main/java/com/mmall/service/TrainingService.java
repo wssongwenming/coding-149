@@ -5,6 +5,7 @@ import com.mmall.beans.PageQuery;
 import com.mmall.beans.PageResult;
 import com.mmall.common.RequestHolder;
 import com.mmall.dao.SysUserMapper;
+import com.mmall.dao.TraineeMapper;
 import com.mmall.dao.TrainingMapper;
 import com.mmall.exception.ParamException;
 import com.mmall.model.SysDept;
@@ -31,6 +32,9 @@ public class TrainingService {
 
     @Resource
     private SysUserMapper sysUserMapper;
+
+    @Resource
+    private TraineeMapper traineeMapper;
 
     @Resource
     private SysLogService sysLogService;
@@ -62,6 +66,10 @@ public class TrainingService {
 
         if (sysUserMapper.countByTrainingId(trainingId) > 0) {//检查当前训练计划下有没有系统用户(sys_user)
             throw new ParamException("当前训练计划下有关联的系统用户，无法删除");
+        }
+
+        if (traineeMapper.countByTrainingId(trainingId) > 0) {//检查当前训练计划下有没有参训人员(trainee)
+            throw new ParamException("当前训练计划下有关联的参训用户，无法删除");
         }
         //TODO 删除时判断有没有依赖数据
         /*if (sysDeptMapper.countByParentId(dept.getId()) > 0) {

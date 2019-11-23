@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>训练计划管理</title>
+    <title>训练准备</title>
     <jsp:include page="/common/backend_common.jsp"/>
     <jsp:include page="/common/page.jsp"/>
 </head>

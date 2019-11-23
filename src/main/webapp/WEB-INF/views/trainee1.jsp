@@ -10,10 +10,10 @@
 
 <div class="page-header">
     <h1>
-        组训人员管理
+        参训人员管理
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
-            维护训练计划-部门-用户关系
+            维护训练计划-参训人员关系
         </small>
     </h1>
 </div>
@@ -25,15 +25,15 @@
         </div>
         <div id="dynamic-table_wrapper_training" class="dataTables_wrapper form-inline no-footer">
             <div class="row">
-                    <div class="dataTables_length align-middle" id="dynamic-table_length_training"><label>
-                        每页
-                         <select id="pageSize_training" name="dynamic-table_length_training" aria-controls="dynamic-table" class="form-control input-sm">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>条记录</label>
-                    </div>
+                <div class="dataTables_length align-middle" id="dynamic-table_length_training"><label>
+                    每页
+                    <select id="pageSize_training" name="dynamic-table_length_training" aria-controls="dynamic-table" class="form-control input-sm">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>条记录</label>
+                </div>
                 <table id="dynamic-table_training" class="table table-striped table-bordered table-hover dataTable no-footer" role="grid"
                        aria-describedby="dynamic-table_info" style="font-size:14px">
                     <thead>
@@ -51,20 +51,10 @@
         </div>
     </div>
 
-    <div class="col-sm-2">
-        <div class="table-header">
-            部门列表&nbsp;&nbsp;
-            <a class="green" href="#">
-                <i class="ace-icon fa fa-plus-circle orange bigger-130 dept-add"></i>
-            </a>
-        </div>
-        <div id="deptList">
-        </div>
-    </div>
-    <div class="col-sm-7">
+    <div class="col-sm-9">
         <div class="col-xs-12">
             <div class="table-header">
-                用户列表&nbsp;&nbsp;
+                参训人员列表&nbsp;&nbsp;
                 <a class="green" href="#">
                     <i class="ace-icon fa fa-plus-circle orange bigger-130 user-add"></i>
                 </a>
@@ -151,7 +141,7 @@
             </tr>
 
             <tr>
-                <td style="width: 120px;"><label for="trainingSelectId">所在训练计划</label></td>
+                <td style="width: 80px;"><label for="trainingSelectId">所在训练计划</label></td>
                 <td>
                     <select id="trainingSelectId" name="trainingId" data-placeholder="选择训练计划" style="width: 200px;"></select>
                 </td>
@@ -280,7 +270,7 @@
                 success: function (result) {
                     if(result.ret) {
                         trainingList = result.data.data;
-                       renderTrainingListAndPage(result, url)
+                        renderTrainingListAndPage(result, url)
                     }else{
                         showMessage("加载训练计划列表", result.msg, false);
                     }
@@ -357,12 +347,12 @@
         function recursiveRenderDept(deptList) {
             if(deptList && deptList.length > 0) {
                 $(deptList).each(function (i, dept) {
-                     deptMap[dept.id] = dept;
-                     if (dept.deptList.length > 0) {
-                         var rendered = Mustache.render(deptListTemplate, {deptList: dept.deptList});
-                         $("#dept_" + dept.id).append(rendered);
-                         recursiveRenderDept(dept.deptList);
-                     }
+                    deptMap[dept.id] = dept;
+                    if (dept.deptList.length > 0) {
+                        var rendered = Mustache.render(deptListTemplate, {deptList: dept.deptList});
+                        $("#dept_" + dept.id).append(rendered);
+                        recursiveRenderDept(dept.deptList);
+                    }
                 })
             }
         }
@@ -612,12 +602,11 @@
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
                         optionStr = "";
-                        recursiveRenderTrainingSelect(trainingList);
+
                         recursiveRenderDeptSelect(deptList, 1);
                         $("#userForm")[0].reset();
                         $("#deptSelectId").html(optionStr);
-                        $("#trainingSelectId").html(optionTrainingStr);
-                        console.log("optiontrainingStr==="+optionTrainingStr);
+
                         var targetUser = userMap[userId];
                         if (targetUser) {
                             $("#deptSelectId").val(targetUser.deptId);
@@ -713,7 +702,7 @@
 
                 });
             }
-         }
+        }
 
         function recursiveRenderDeptSelect(deptList, level) {
             level = level | 0;

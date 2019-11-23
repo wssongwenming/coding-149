@@ -23,6 +23,9 @@
 <link rel="stylesheet" href="/assets/css/jquery.gritter.css" />
 <link rel="stylesheet" href="/assets/css/jquery-ui.min.css" />
 <link rel="stylesheet" href="/assets/css/chosen.css" />
+
+<link rel="stylesheet" href="/bootstrap3.3.5/css/fileinput.min.css" />
+
 <!--[if lte IE 9]>
 <link rel="stylesheet" href="/assets/css/ace-ie.min.css"/>
 <![endif]-->
@@ -41,6 +44,8 @@
 <script src="/assets/js/chosen.jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/mustache.js/2.2.1/mustache.js"></script>
 <script src="/bootstrap3.3.5/js/bootstrap.min.js"></script>
+<script src="/bootstrap3.3.5/js/fileinput.min.js"></script>
+<script src="/bootstrap3.3.5/js/zh.js"></script>
 <script src="/js/laydate/laydate.js"></script>
 <script type="text/javascript">
     // 展示提示信息

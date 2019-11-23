@@ -1,0 +1,30 @@
+package com.mmall.dao;
+
+import com.mmall.beans.PageQuery;
+import com.mmall.model.Trainee;
+import com.mmall.model.Training;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+public interface TraineeMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Trainee record);
+
+    int insertSelective(Trainee record);
+
+    Trainee selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Trainee record);
+
+    int updateByPrimaryKey(Trainee record);
+
+    int countByTrainingId(@Param("trainingId") int trainingId);
+
+    int countByPhone(@Param("phone") String phone,@Param("id") Integer id);
+
+    List<Trainee> getPage(@Param("page") PageQuery page);
+
+    int countAll();
+}

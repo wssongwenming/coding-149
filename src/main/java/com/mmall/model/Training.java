@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 public class Training {
+
     private Integer id;
 
     private String title;
