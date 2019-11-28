@@ -219,6 +219,8 @@
     <td><a href="#" class="trainee-edit" data-id="{{id}}">{{name}}</a></td>
     <td>{{workunit}}</td>
     <td>{{phone}}</td>
+    <td>{{showStatus}}</td>
+    <td>{{password}}</td>
     <td>{{memo}}</td>
     <td>
         <div class="hidden-sm hidden-xs action-buttons">
@@ -249,10 +251,8 @@
         var trainingListTemplate = $('#trainingListTemplate').html();
         Mustache.parse(trainingListTemplate);
 
-        var deptListTemplate = $('#deptListTemplate').html();
-        Mustache.parse(deptListTemplate);
-        var userListTemplate = $('#userListTemplate').html();
-        Mustache.parse(userListTemplate);
+        var traineeListTemplate = $('#traineeListTemplate').html();
+        Mustache.parse(traineeListTemplate);
 
 
         loadTrainingList();
@@ -322,8 +322,6 @@
             loadTraineeListByTrainingId(trainingId);
         }
 
-
-
         function loadTraineeListByTrainingId(trainingId) {
             var pageSize = $("#pageSize").val();
             var url = "/sys/trainee/pageByTrainingId.json?trainingId=" + trainingId;
@@ -340,33 +338,15 @@
             })
         }
 
-
-
-
         function renderTraineeListAndPage(result, url) {
 
             if (result.ret) {
                 if (result.data.total > 0){
-                    var rendered = Mustache.render(userListTemplate, {
+                    var rendered = Mustache.render(traineeListTemplate, {
                         traineeList: result.data.data,
-                        "showDeptName": function() {
-                            return deptMap[this.deptId].name;
-                        },
                         "showStatus": function() {
-                            return this.status == 1 ? '有效' : (this.status == 0 ? '无效' : '删除');
+                            return this.status == 1 ? '等候中' : (this.status == 2 ? '打靶中' : (this.status == 3 ? '缺席' : "打靶完毕"));
                         },
-                        "bold": function() {
-                            return function(text, render) {
-                                var status = render(text);
-                                if (status == '有效') {
-                                    return "<span class='label label-sm label-success'>有效</span>";
-                                } else if(status == '无效') {
-                                    return "<span class='label label-sm label-warning'>无效</span>";
-                                } else {
-                                    return "<span class='label'>删除</span>";
-                                }
-                            }
-                        }
                     });
                     $("#traineeList").html(rendered);
                     bindTraineeClick();
@@ -378,7 +358,7 @@
                 }
                 var pageSize = $("#pageSize").val();
                 var pageNo = $("#traineePage .pageNo").val() || 1;
-                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "userPage", renderTraineeListAndPage);
+                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "traineePage", renderTraineeListAndPage);
             } else {
                 showMessage("获取部门下用户列表", result.msg, false);
             }

@@ -1,6 +1,7 @@
 package com.mmall.dao;
 
 import com.mmall.beans.PageQuery;
+import com.mmall.model.SysUser;
 import com.mmall.model.Trainee;
 import com.mmall.model.Training;
 import org.apache.ibatis.annotations.Param;
@@ -24,7 +25,7 @@ public interface TraineeMapper {
 
     int countByPhone(@Param("phone") String phone,@Param("id") Integer id);
 
-    List<Trainee> getPage(@Param("page") PageQuery page);
+    List<Trainee> getPageByTrainingId(@Param("trainingId") int trainingId, @Param("page") PageQuery page);
 
     int countAll();
 }

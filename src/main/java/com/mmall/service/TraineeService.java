@@ -6,11 +6,13 @@ import com.mmall.beans.PageResult;
 import com.mmall.dao.TraineeMapper;
 import com.mmall.dao.TrainingMapper;
 import com.mmall.exception.ParamException;
+import com.mmall.model.SysUser;
 import com.mmall.model.Trainee;
 import com.mmall.model.Training;
 import com.mmall.param.TraineeParam;
 import com.mmall.param.TrainingParam;
 import com.mmall.util.BeanValidator;
+import com.mmall.util.MD5Util;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,7 +35,7 @@ public class TraineeService {
         if(checkTelephoneExist(param.getPhone(), param.getId())) {
             throw new ParamException("电话已被占用");
         }
-        Trainee trainee = Trainee.builder().name(param.getName()).trainingId(param.getTrainingId()).password(param.getPassword())
+        Trainee trainee = Trainee.builder().name(param.getName()).trainingId(param.getTrainingId()).password(MD5Util.encrypt(param.getPassword()))
         .phone(param.getPhone()).memo(param.getMemo()).photo(param.getPhoto()).workunit(param.getWorkunit()).build();
         traineeMapper.insertSelective(trainee);
     }
@@ -53,7 +55,7 @@ public class TraineeService {
         return traineeMapper.countByPhone(phone, id) > 0;
     }
 
-
+/*
     public PageResult<Trainee> getPage(PageQuery page) {
         BeanValidator.check(page);
         int count = traineeMapper.countAll();
@@ -62,7 +64,7 @@ public class TraineeService {
             return PageResult.<Trainee>builder().total(count).data(list).build();
         }
         return PageResult.<Trainee>builder().build();
-    }
+    }*/
 
     public void delete(int traineeId) {
         Trainee trainee = traineeMapper.selectByPrimaryKey(traineeId);
@@ -76,5 +78,17 @@ public class TraineeService {
             throw new ParamException("当前部门下面有用户，无法删除");
         }*/
         traineeMapper.deleteByPrimaryKey(traineeId);
+    }
+
+
+    public PageResult<Trainee> getPageByTrainingId(int trainingId, PageQuery page){
+        BeanValidator.check(page);
+        int count = traineeMapper.countByTrainingId(trainingId);
+        if (count > 0) {
+            List<Trainee> list = traineeMapper.getPageByTrainingId(trainingId, page);
+            return PageResult.<Trainee>builder().total(count).data(list).build();
+        }
+        return PageResult.<Trainee>builder().build();
+
     }
 }

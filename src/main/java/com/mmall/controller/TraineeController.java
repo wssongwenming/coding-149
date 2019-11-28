@@ -4,6 +4,7 @@ import com.mmall.beans.PageQuery;
 import com.mmall.beans.PageResult;
 import com.mmall.common.JsonData;
 import com.mmall.model.Trainee;
+import com.mmall.model.Training;
 import com.mmall.param.TraineeParam;
 import com.mmall.service.TraineeService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,12 +45,12 @@ public class TraineeController {
         return JsonData.success();
     }
 
-    @RequestMapping("/page.json")
+/*    @RequestMapping("/page.json")
     @ResponseBody
     public JsonData page(PageQuery pageQuery) {
         PageResult<Trainee> result = traineeService.getPage(pageQuery);
         return JsonData.success(result);
-    }
+    }*/
 
     @RequestMapping("/delete.json")
     @ResponseBody
@@ -57,6 +58,13 @@ public class TraineeController {
         traineeService.delete(id);
         System.out.print("aaaaaa="+JsonData.success().toMap());
         return JsonData.success();
+    }
+
+    @RequestMapping("/pageByTrainingId.json")
+    @ResponseBody
+    public JsonData page(@RequestParam("trainingId") int trainingId,PageQuery pageQuery) {
+        PageResult<Trainee> result = traineeService.getPageByTrainingId(trainingId, pageQuery);;
+        return JsonData.success(result);
     }
 
 

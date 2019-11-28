@@ -42,7 +42,7 @@ public class SysUserService {
         }
         String password = PasswordUtil.randomPassword();
         //TODO:
-        password = "12345678";
+        password = "123456";
         String encryptedPassword = MD5Util.encrypt(password);
         SysUser user = SysUser.builder().username(param.getUsername()).telephone(param.getTelephone()).mail(param.getMail())
                 .password(encryptedPassword).deptId(param.getDeptId()).trainingId(param.getTrainingId()).status(param.getStatus()).remark(param.getRemark()).build();

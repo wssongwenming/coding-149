@@ -166,4 +166,12 @@
     FROM trainee
   </select>
 
+  <select id="getPageByTrainingId" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM trainee
+    WHERE training_id = #{trainingId}
+    ORDER BY id ASC
+    LIMIT #{page.offset}, #{page.pageSize}
+  </select>
+
 </mapper>
