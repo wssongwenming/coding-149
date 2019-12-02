@@ -178,7 +178,7 @@
                 url: isCreate ? "/sys/training/save.json" : "/sys/training/update.json",
                 data: $("#trainingForm").serializeArray(),
                 type: 'POST',
- /*               position: {
+               position: {
                     my: 'center',
                     at: 'center',
                     of: window,
@@ -190,7 +190,7 @@
                             $(this).css('top', pos.top - topOffset);
                         }
                     }
-                },*/
+                },
                 success: function(result) {
                     if (result.ret) {
                         if (successCallback) {

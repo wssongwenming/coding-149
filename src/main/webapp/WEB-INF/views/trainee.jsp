@@ -63,6 +63,13 @@
                 <a class="green" href="#">
                     <i class="ace-icon fa fa-plus-circle orange bigger-130 trainee-add"></i>
                 </a>
+                <a class="black" href="#">
+                     <i class="ace-icon fa fa-angle-double-right black bigger-130"></i>
+                </a>
+                参训人员数据(被导入excel字段应为：姓名、部职别、手机号、备注)&nbsp;&nbsp;
+                <a class="green" href="#">
+                    <i class="ace-icon fa fa-file-excel-o orange bigger-120 trainee-import"></i>
+                </a>
             </div>
             <div>
                 <div id="dynamic-table_wrapper" class="dataTables_wrapper form-inline no-footer">
@@ -70,7 +77,7 @@
                         <div class="col-xs-6">
                             <div class="dataTables_length" id="dynamic-table_length"><label>
                                 每页
-                                <select id="pageSize" name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm">
+                                <select id="pageSize_trainee" name="dynamic-table_length" aria-controls="dynamic-table" class="form-control input-sm">
                                     <option value="10">10</option>
                                     <option value="25">25</option>
                                     <option value="50">50</option>
@@ -98,9 +105,9 @@
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 参训人员状态
                             </th>
-                            <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
+<%--                            <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 密码
-                            </th>
+                            </th>--%>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 备注
                             </th>
@@ -158,7 +165,7 @@
             <tr>
                 <td><label >照片</label></td>
                 <td align="left"> <img style="width:70px;height:70px" id="imgEmdImg" class="img-circle">
-                    <input type="text" name="photo" id="trainee_photo" value="" style="display:none">
+                    <input type="text" name="photo" id="traineePhoto" value="" style="display:none">
                     <button type="button" id="btnImg" class="btn btn-default" data-dismiss="modal">修改头像</button>
                 </td>
             </tr>
@@ -170,7 +177,7 @@
     </form>
 </div>
 
-<div class="modal fade in" id="Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade in" id="uploadPhoto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content animated flipInY">
             <div class="modal-header">
@@ -183,7 +190,7 @@
             </div>
             <div class="modal-body">
                 <form id="videoForm">
-                    <input id="txt_file" name="txt_file" type="file">
+                    <input id="photo_file" name="photo_file" type="file">
                 </form>
             </div>
    <%--         <div class="modal-footer">
@@ -198,7 +205,26 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
+<!--导入excel数据操作层-->
+<div class="modal fade in" id="uploadExcel" tabindex="-1" role="dialog" aria-labelledby="excelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated flipInY">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="excelModalLabel">
+                    excel文件上传
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="excelForm">
+                    <input id="excel_file" name="excel_file" type="file">
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 
@@ -220,7 +246,7 @@
     <td>{{workunit}}</td>
     <td>{{phone}}</td>
     <td>{{showStatus}}</td>
-    <td>{{password}}</td>
+   <%-- <td>{{password}}</td>--%>
     <td>{{memo}}</td>
     <td>
         <div class="hidden-sm hidden-xs action-buttons">
@@ -291,7 +317,7 @@
                 } else {
                     $("#trainingList").html('');
                 }
-                var pageSize = $("#pageSize").val();
+                var pageSize = $("#pageSize_training").val();
                 var pageNo = $("#trainingPage .pageNo").val() || 1;
                 renderSimplePage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "trainingPage", renderTrainingListAndPage);
             } else {
@@ -319,6 +345,7 @@
             currentTraining.addClass("btn-yellow");
             currentTraining.addClass("no-hover");
             lastClickTrainingId = trainingId;
+            $("#trainingId_for_uploaded_excel").val(lastClickTrainingId);
             loadTraineeListByTrainingId(trainingId);
         }
 
@@ -356,7 +383,7 @@
                 } else {
                     $("#traineeList").html('');
                 }
-                var pageSize = $("#pageSize").val();
+                var pageSize = $("#pageSize_trainee").val();
                 var pageNo = $("#traineePage .pageNo").val() || 1;
                 renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "traineePage", renderTraineeListAndPage);
             } else {
@@ -367,6 +394,7 @@
         $(".trainee-add").click(function() {
             $("#dialog-trainee-form").dialog({
                 modal: true,
+                minWidth: 450,
                 title: "新增参训人员",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
@@ -448,6 +476,7 @@
                 var traineeId = $(this).attr("data-id");
                 $("#dialog-trainee-form").dialog({
                     modal: true,
+                    minWidth: 450,
                     title: "编辑参训人员",
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
@@ -459,48 +488,51 @@
 
                         var targetTrainee = traineeMap[traineeId];
                         if (targetTrainee) {
-                            $("#deptSelectId").val(targetUser.deptId);
-                            $("#userName").val(targetUser.username);
-                            $("#userMail").val(targetUser.mail);
-                            $("#userTelephone").val(targetUser.telephone);
-                            $("#userStatus").val(targetUser.status);
-                            $("#userRemark").val(targetUser.remark);
-                            $("#userId").val(targetUser.id);
+                            $("#trainingSelectId").val(targetTrainee.trainingId);
+                            $("#traineeId").val(targetTrainee.id);
+                            $("#traineeName").val(targetTrainee.name);
+                            $("#traineeWorkUnit").val(targetTrainee.workunit);
+                            $("#traineePhone").val(targetTrainee.phone);
+                            $("#traineeStatus").val(targetTrainee.status);
+                            $("#traineePassword").val(targetTrainee.password);
+                            $("#traineePhoto").val(targetTrainee.photo);
+                            $("#imgEmdImg").attr("src", targetTrainee.photo);
+                            $("#traineeMemo").val(targetTrainee.memo);
                         }
                     },
                     buttons : {
                         "更新": function(e) {
                             e.preventDefault();
-                            updateUser(false, function (data) {
-                                $("#dialog-user-form").dialog("close");
-                                loadUserList(lastClickDeptId);
+                            updateTrainee(false, function (data) {
+                                $("#dialog-trainee-form").dialog("close");
+                                loadTraineeListByTrainingId(lastClickTrainingId);
                             }, function (data) {
-                                showMessage("更新用户", data.msg, false);
+                                showMessage("更新参训人员失败", data.msg, false);
                             })
                         },
                         "取消": function () {
-                            $("#dialog-user-form").dialog("close");
+                            $("#dialog-trainee-form").dialog("close");
                         }
                     }
                 });
             });
-            $(".user-delete").click(function(e) {
+            $(".trainee-delete").click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var traineeId = $(this).attr("data-id");
                 var traineeName = $(this).attr("data-name");
-                if (confirm("确定要删除用户[" + userName + "]吗?")) {
+                if (confirm("确定要删除参训人员[" + traineeName + "]吗?")) {
                     $.ajax({
-                        url: "/sys/user/delete.json",
+                        url: "/sys/trainee/delete.json",
                         data: {
-                            id: userId
+                            id: traineeId
                         },
                         success: function (result) {
                             if (result.ret) {
-                                showMessage("删除用户[" + traineeName + "]", "操作成功", true);
-                                loadUserListBy(lastClickDeptId,lastClickTrainingId);
+                                showMessage("删除参训人员[" + traineeName + "]", "操作成功", true);
+                                loadTraineeListByTrainingId(lastClickTrainingId);
                             } else {
-                                showMessage("删除部门[" + traineeName + "]", result.msg, false);
+                                showMessage("删除参训人员[" + traineeName + "]", result.msg, false);
                             }
                         }
                     });
@@ -518,58 +550,10 @@
             }
         }
 
-        function recursiveRenderDeptSelect(deptList, level) {
-            level = level | 0;
-            if (deptList && deptList.length > 0) {
-                $(deptList).each(function (i, dept) {
-                    deptMap[dept.id] = dept;
-                    var blank = "";
-                    if (level > 1) {
-                        for(var j = 3; j <= level; j++) {
-                            blank += "..";
-                        }
-                        blank += "∟";
-                    }
-                    optionStr += Mustache.render("<option value='{{id}}'>{{name}}</option>", {id: dept.id, name: blank + dept.name});
-                    if (dept.deptList && dept.deptList.length > 0) {
-                        recursiveRenderDeptSelect(dept.deptList, level + 1);
-                    }
-                });
-            }
-        }
 
-        function updateUser(isCreate, successCallback, failCallback) {
-            $.ajax({
-                url: isCreate ? "/sys/user/save.json" : "/sys/user/update.json",
-                data: $("#userForm").serializeArray(),
-                type: 'POST',
-                success: function(result) {
-                    if (result.ret) {
-                        loadDeptTree();
-                        if (successCallback) {
-                            successCallback(result);
-                        }
-                    } else {
-                        if (failCallback) {
-                            failCallback(result);
-                        }
-                    }
-                }
-            })
-        }
-
-
-
-
-
-
-
-        var EmImg = ""; //定义初始头像  我这里定义为空
-
-        //初始化fileinput
-        var FileInput = function () {
+        //初始化用于照片上传的fileinput控件
+        var FileInput_Photo = function () {
             var oFile = new Object();
-
             //初始化fileinput控件（第一次初始化）
             oFile.Init = function (ctrlName, uploadUrl) {
                 var control = $('#' + ctrlName);
@@ -597,27 +581,83 @@
                 });
 
                 //导入文件上传完成之后的事件
-                $("#txt_file").on("fileuploaded", function (event, data, previewId, index) {
+                $("#photo_file").on("fileuploaded", function (event, data, previewId, index) {
 
                     var data = data.response.data;
-                    showMessage("删除部门", data, false);
+                    //showMessage("上传照片失败", data, false);
                     //document.getElementById('videoForm').outerHtml = document.getElementById('videoForm').outerHtml;
                     //document.getElementById("videoForm").reset();
-                    $("#trainee_photo").val(data);
-                    $("#Modal").modal('hide');
+                    $("#traineePhoto").val(data);
+                    $("#uploadPhoto").modal('hide');
                     $("#imgEmdImg").attr("src", data);
                 });
             }
             return oFile;
         };
 
+        //初始化用于excel上传的fileinput控件
+        var FileInput_Excel = function () {
+            var oFile = new Object();
+            //初始化fileinput控件（第一次初始化）
+            oFile.Init = function (ctrlName, uploadUrl) {
+                var control = $('#' + ctrlName);
+
+                //初始化上传控件的样式
+                control.fileinput({
+                    language: 'zh', //设置语言
+                    uploadUrl: uploadUrl, //上传的地址
+                    allowedFileExtensions: ['xls', 'xlsx'],//接收的文件后缀
+                    showUpload: true, //是否显示上传按钮
+                    showCaption: false,//是否显示标题
+                    browseClass: "btn btn-primary", //按钮样式
+                    //dropZoneEnabled: false,//是否显示拖拽区域
+                    //minImageWidth: 50, //图片的最小宽度
+                    //minImageHeight: 50,//图片的最小高度
+                    //maxImageWidth: 1000,//图片的最大宽度
+                    //maxImageHeight: 1000,//图片的最大高度
+                    maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+                    //minFileCount: 0,
+                    maxFileCount: 1, //表示允许同时上传的最大文件个数
+                    enctype: 'multipart/form-data',
+                    validateInitialCount: true,
+                    previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                    msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                });
+
+                //导入文件上传完成之后的事件
+                $("#excel_file").on("fileuploaded", function (event, data, previewId, index) {
+                    var data = data.response.data;
+                    //showMessage("上传照片", data, false);
+                    $("#uploadExcel").modal('hide');
+                    loadTraineeListByTrainingId(lastClickTrainingId);
+                });
+            }
+            return oFile;
+        };
+
+
         //上传头像
-        var oFileInput = new FileInput();
-        oFileInput.Init("txt_file", "/sys/file/upload");
+        var oPhotoUpload = new FileInput_Photo();
+        oPhotoUpload.Init("photo_file", "/sys/file/upload");
+
+        //上传Excel
+        var oExcelUpload = new FileInput_Excel();
+        //oExcelUpload.Init("excel_file", "/sys/file/uploadExcel/"+lastClickTrainingId);//lastClickTrainingId会在一开始时就被赋值为-1所以点选后无法改变，所以必须放在新的位置
 
         //弹出添加图片模态
         $("#btnImg").click(function () {
-            $("#Modal").modal("show");
+            $("#uploadPhoto").modal("show");
+        });
+
+        //弹出添加excel模态
+        $(".trainee-import").click(function () {
+
+            if(lastClickTrainingId==-1){
+                showMessage("提示", "您还没有选中训练计划", false);
+            }else {
+                oExcelUpload.Init("excel_file", "/sys/file/uploadExcel/"+lastClickTrainingId);
+                $("#uploadExcel").modal("show");
+            }
         });
 
 

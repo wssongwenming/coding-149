@@ -3,13 +3,20 @@ package com.mmall.controller;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import com.mmall.common.JsonData;
-import com.mmall.service.ResourceService;
-import com.mmall.service.SysRoleService;
-import com.mmall.service.SysTreeService;
-import com.mmall.service.SysUserService;
+import com.mmall.service.*;
+import com.mmall.util.MD5Util;
 import com.mmall.util.ResponseFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +39,14 @@ import java.util.*;
 public class FileUploadController {
 
     @Resource
+    private TraineeService traineeService;
+
+    @Resource
     private ResourceService resourceService;
 
     @RequestMapping(path="/upload",method = RequestMethod.POST, consumes = { "multipart/form-data","multipart/mixed" })
     @ResponseBody
-    public JsonData UploadFile(@RequestPart("txt_file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    public JsonData UploadPhoto(@RequestPart("photo_file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws ParseException {
         String fileName=file.getOriginalFilename();//获取文件名加后缀
         File targetFile=null;
         if(fileName!=null&&fileName!=""){
@@ -78,6 +88,117 @@ public class FileUploadController {
         return JsonData.success(photoPath);
     }
 
+    @RequestMapping(path="/uploadExcel/{trainingId}",method = RequestMethod.POST, consumes = { "multipart/form-data","multipart/mixed" })
+    @ResponseBody
+    public JsonData UploadExcel(@RequestPart("excel_file") MultipartFile file,@PathVariable("trainingId") int trainingId, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        // 判断文件是否为空
+        String flag = "02";//上传标志
+        if (!file.isEmpty()) {
+            try {
+                InputStream inputStream=file.getInputStream();
+                ArrayList<Object> arrayList = new ArrayList<Object>();
+                String originalFilename = file.getOriginalFilename();//原文件名字
+                String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+                if (!"xlsx".equals(suffix) && !"xls".equals(suffix)) {
+                    System.out.println("请传入excel文件");
+                }
+                if ("xlsx".equals(suffix)) {
+                    xlsxImp(inputStream, arrayList,trainingId);
+                }
+                if ("xls".equals(suffix)) {
+                    xlsImp(inputStream, arrayList,trainingId);
+                }
+                flag = traineeService.writeExelData(arrayList);
+
+            } catch (Exception e) {
+
+                flag="03";//上传出错
+
+                e.printStackTrace();
+
+            }
+
+        }
+        return JsonData.success(flag);
+    }
+
+    private void xlsImp(InputStream inputStream, ArrayList<Object> arrayList,Integer trainingId) throws IOException, ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy\\MM\\dd");
+        String fileAddDate = sdf.format(new Date());
+        // 初始整个Excel
+        HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+        // 获取第一个sheet表
+        HSSFSheet sheet = workbook.getSheetAt(0);
+        for (int rowIndex = 1; rowIndex < sheet.getLastRowNum(); rowIndex++) {
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            HSSFRow row = sheet.getRow(rowIndex);
+            //整行都为空去掉
+            if(row==null) {
+                continue;
+            }
+            for (int cellIndex = 0; cellIndex < row.getLastCellNum(); cellIndex++) {
+                HSSFCell cell = row.getCell(cellIndex);
+                if(cell==null) {
+                    hashMap.put(getKey(cellIndex), " ");
+                    continue;
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    String cellValue=cell.getStringCellValue();
+                    hashMap.put(getKey(cellIndex), cellValue);
+                }
+             }
+            hashMap.put("status","1");
+            hashMap.put("password",MD5Util.encrypt("1234"));
+            hashMap.put("trainingid",trainingId);
+            hashMap.put("photo","\\sys\\file\\"+fileAddDate+"\\"+hashMap.get("name")+"\\jpg");
+            arrayList.add(hashMap);
+        }
+    }
+
+    private void xlsxImp(InputStream inputStream, ArrayList<Object> arrayList,Integer trainingId) throws IOException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy\\MM\\dd");
+        String fileAddDate = sdf.format(new Date());
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
+        XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+        for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            XSSFRow row = sheet.getRow(rowIndex);
+            //整行都为空去掉
+            if(row==null) {
+                continue;
+            }
+            for (int cellIndex = 0; cellIndex < row.getLastCellNum(); cellIndex++) {
+                XSSFCell cell = row.getCell(cellIndex);
+                cell.setCellType(Cell.CELL_TYPE_STRING);
+                 hashMap.put(getKey(cellIndex), cell.getStringCellValue());
+            }
+            hashMap.put("status","1");
+            hashMap.put("password",MD5Util.encrypt("1234"));
+            hashMap.put("trainingid",trainingId);
+            hashMap.put("photo","\\sys\\file\\"+fileAddDate+"\\"+hashMap.get("name")+"\\jpg");
+            arrayList.add(hashMap);
+        }
+    }
+    public static String getKey(int cell) {
+        String result = null;
+        switch (cell) {
+            case 0:
+                result="name";
+                break;
+            case 1:
+                result="workunit";
+                break;
+            case 2:
+                result="phone";
+                break;
+            case 3:
+                result="memo";
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
 
     @RequestMapping(value = "/{driver}/{year}/{month}/{day}/{imagename}/{suffix}")
     public void downloadFile(HttpServletResponse response,@PathVariable("driver") String driver,@PathVariable("year") String year,@PathVariable("month") String month,@PathVariable("day") String day, @PathVariable("imagename") String imagename,@PathVariable("suffix") String suffix) throws IOException {

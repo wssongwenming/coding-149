@@ -56,7 +56,6 @@ public class TraineeController {
     @ResponseBody
     public JsonData delete(@RequestParam("id") int id) {
         traineeService.delete(id);
-        System.out.print("aaaaaa="+JsonData.success().toMap());
         return JsonData.success();
     }
 

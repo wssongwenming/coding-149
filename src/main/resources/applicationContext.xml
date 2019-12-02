@@ -25,10 +25,15 @@
         <property name="url" value="${db.url}" />
         <property name="username" value="${db.username}" />
         <property name="password" value="${db.password}" />
+        <!--#定义初始连接数-->
         <property name="initialSize" value="3" />
+        <!--#定义最小空闲-->
         <property name="minIdle" value="3" />
+        <!--#定义最大连接数-->
         <property name="maxActive" value="20" />
+        <!--#定义最长等待时间-->
         <property name="maxWait" value="60000" />
+
         <property name="filters" value="stat" />
     </bean>
 
@@ -37,6 +42,12 @@
         <property name="dataSource" ref="dataSource" />
         <property name="mapperLocations" value="classpath:mapper/*.xml" />
     </bean>
+    <!--#用于批量插入数据-->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+        <!--<constructor-arg index="1" value="BATCH" />-->
+    </bean>
+
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.mmall.dao" />

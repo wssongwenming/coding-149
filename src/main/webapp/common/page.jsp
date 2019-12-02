@@ -37,14 +37,14 @@
     <div class="dataTables_paginate paging_simple_numbers" id="dynamic-table_paginate">
         <ul class="pagination">
             <li class="paginate_button {{^beforeUrl}}disabled{{/beforeUrl}}" aria-controls="dynamic-table" tabindex="0">
-                <a href="#" data-target="{{beforePageNo}}" data-url="{{beforeUrl}}" class="page-action">前一页</a>
+                <a href="#" data-target="{{beforePageNo}}" data-url="{{beforeUrl}}" class="page-action-simple">前一页</a>
             </li>
             <li class="paginate_button active" aria-controls="dynamic-table" tabindex="0">
                 <a href="#" data-id="{{pageNo}}" >第{{pageNo}}页</a>
                 <input type="hidden" class="pageNo" value="{{pageNo}}" />
             </li>
             <li class="paginate_button {{^nextUrl}}disabled{{/nextUrl}}" aria-controls="dynamic-table" tabindex="0">
-                <a href="#" data-target="{{nextPageNo}}" data-url="{{nextUrl}}" class="page-action">后一页</a>
+                <a href="#" data-target="{{nextPageNo}}" data-url="{{nextUrl}}" class="page-action-simple">后一页</a>
             </li>
         </ul>
 </div>
@@ -76,7 +76,7 @@
         };
         $("#" + idElement).html(Mustache.render(paginateTemplate, view));
 
-        $(".page-action").click(function(e) {
+        $(".page-action").click(function(e) {//单击前一页，后一页时的动作
             e.preventDefault();
             $("#" + idElement + " .pageNo").val($(this).attr("data-target"));
             var targetUrl  = $(this).attr("data-url");
@@ -112,7 +112,7 @@
         };
         $("#" + idElement).html(Mustache.render(simplePaginateTemplate, view));
 
-        $(".page-action").click(function(e) {
+        $(".page-action-simple").click(function(e) {
             e.preventDefault();
             $("#" + idElement + " .pageNo").val($(this).attr("data-target"));
             var targetUrl  = $(this).attr("data-url");

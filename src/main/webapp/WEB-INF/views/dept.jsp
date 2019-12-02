@@ -301,7 +301,7 @@
                 } else {
                     $("#trainingList").html('');
                 }
-                var pageSize = $("#pageSize").val();
+                var pageSize = $("#pageSize_training").val();
                 var pageNo = $("#trainingPage .pageNo").val() || 1;
                 renderSimplePage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "trainingPage", renderTrainingListAndPage);
             } else {
@@ -406,6 +406,7 @@
                 var deptId = $(this).attr("data-id");
                 $("#dialog-dept-form").dialog({
                     modal: true,
+                    minWidth: 450,
                     title: "编辑部门",
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
@@ -552,6 +553,7 @@
         $(".user-add").click(function() {
             $("#dialog-user-form").dialog({
                 modal: true,
+                minWidth: 450,
                 title: "新增用户",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
@@ -608,6 +610,7 @@
                 var userId = $(this).attr("data-id");
                 $("#dialog-user-form").dialog({
                     modal: true,
+                    minWidth: 450,
                     title: "编辑用户",
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
@@ -680,6 +683,7 @@
         $(".dept-add").click(function() {
             $("#dialog-dept-form").dialog({
                 modal: true,
+                minWidth: 450,
                 title: "新增部门",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
