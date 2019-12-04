@@ -112,11 +112,21 @@
                         <b class="arrow"></b>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/trainee/trainee.page" target="_blank">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            参训人员管理
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-desktop"></i>
+                            <span class="menu-text">参训人员管理</span>
+                            <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li class="">
+                                <a class="popstyle" href="/sys/trainee/trainee.page" target="_blank">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    参训人员数据维护
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        </ul>
                     </li>
                     <li class="">
                         <a class="popstyle" href="/sys/log/log.page" target="_blank">
@@ -126,11 +136,35 @@
                         <b class="arrow"></b>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/log/log.page" target="_blank">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            器械保障
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-desktop"></i>
+                            <span class="menu-text">器械保障</span>
+                            <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li class="">
+                                <a class="popstyle" href="/sys/target/target.page" target="_blank">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    靶机设备维护
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a class="popstyle" href="/sys/camera/camera.page" target="_blank">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    照靶终端维护
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a class="popstyle" href="/sys/display/display.page" target="_blank">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    显靶终端维护
+                                </a>
+                                <b class="arrow"></b>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>

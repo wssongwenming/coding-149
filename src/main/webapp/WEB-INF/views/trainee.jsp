@@ -15,7 +15,7 @@
 
 <div class="page-header">
     <h1>
-        参训人员管理
+        参训人员数据维护
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
             维护训练计划-参训人员关系

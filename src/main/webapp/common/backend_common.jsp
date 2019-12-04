@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="/assets/css/chosen.css" />
 
 <link rel="stylesheet" href="/bootstrap3.3.5/css/fileinput.min.css" />
-
+<link rel="stylesheet" href="/bootstrap3.3.5/css/bootstrapValidator.min.css"" />
 <!--[if lte IE 9]>
 <link rel="stylesheet" href="/assets/css/ace-ie.min.css"/>
 <![endif]-->
@@ -46,6 +46,7 @@
 <script src="/bootstrap3.3.5/js/bootstrap.min.js"></script>
 <script src="/bootstrap3.3.5/js/fileinput.min.js"></script>
 <script src="/bootstrap3.3.5/js/zh.js"></script>
+<script src="/bootstrap3.3.5/js/bootstrapValidator.min.js"></script>
 <script src="/js/laydate/laydate.js"></script>
 <script type="text/javascript">
     // 展示提示信息
