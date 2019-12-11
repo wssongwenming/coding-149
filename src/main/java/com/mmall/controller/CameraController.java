@@ -42,6 +42,13 @@ public class CameraController {
         PageResult<Camera> result = cameraService.getPage(pageQuery);
         return JsonData.success(result);
     }
+
+    @RequestMapping("/camera.json")//
+    @ResponseBody
+    public JsonData getAll() {
+        PageResult<Camera> result = cameraService.getAll();
+        return JsonData.success(result);
+    }
     @RequestMapping("/delete.json")
     @ResponseBody
     public JsonData delete(@RequestParam("id") int id) {

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class Target {
     private Integer id;
 
+    private Integer device_index;
+
     private String name;
 
     private String mac;
@@ -28,6 +30,14 @@ public class Target {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getDevice_index() {
+        return device_index;
+    }
+
+    public void setDevice_index(Integer device_index) {
+        this.device_index = device_index;
     }
 
     public String getName() {

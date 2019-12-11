@@ -34,8 +34,11 @@ public class CameraService {
         if (checkExistByNumber(param.getNumber(),param.getId())) {
             throw new ParamException("设备IP地址已经存在");
         }
+        if (checkExistByIndex(param.getDevice_index(),param.getId())) {
+            throw new ParamException("设备编号已经存在");
+        }
         Camera camera = Camera.builder().name(param.getName()).mac(param.getMac()).ip(param.getIp())
-                .status(param.getStatus()).number(param.getNumber()).memo(param.getMemo()).build();
+                .status(param.getStatus()).device_index(param.getDevice_index()).number(param.getNumber()).memo(param.getMemo()).build();
         cameraMapper.insertSelective(camera);
     }
     public PageResult<Camera> getPage(PageQuery page) {
@@ -69,10 +72,19 @@ public class CameraService {
         Preconditions.checkNotNull(before, "待更新的设备不存在");
 
         Camera after = Camera.builder().id(param.getId()).name(param.getName()).ip(param.getIp())
-                .mac(param.getMac()).status(param.getStatus()).number(param.getNumber()).memo(param.getMemo()).build();
+                .mac(param.getMac()).status(param.getStatus()).device_index(param.getDevice_index()).number(param.getNumber()).memo(param.getMemo()).build();
         cameraMapper.updateByPrimaryKeySelective(after);
 
     }
+    public PageResult<Camera> getAll() {
+        int count = cameraMapper.count();
+        if (count > 0) {
+            List<Camera> list = cameraMapper.getAll();
+            return PageResult.<Camera>builder().total(count).data(list).build();
+        }
+        return PageResult.<Camera>builder().build();
+    }
+
 
     private boolean checkExistByIp(String ip,Integer id) {
         return cameraMapper.countByIp(ip,id) > 0;
@@ -80,7 +92,10 @@ public class CameraService {
     private boolean checkExistByMac(String mac,Integer id) {
         return cameraMapper.countByMac(mac,id) > 0;
     }
-    private boolean checkExistByNumber(Integer number,Integer id) {
+    private boolean checkExistByNumber(Integer number,Integer id) {//所处靶位编号
         return cameraMapper.countByNumber(number,id) > 0;
+    }
+    private boolean checkExistByIndex(Integer device_index,Integer id) {//设备编号
+        return cameraMapper.countByDeviceIndex(device_index,id) > 0;
     }
 }

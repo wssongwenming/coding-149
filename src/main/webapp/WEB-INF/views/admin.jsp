@@ -129,6 +129,13 @@
                         </ul>
                     </li>
                     <li class="">
+                        <a class="popstyle" href="/sys/device/group.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            靶位编组
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
                         <a class="popstyle" href="/sys/log/log.page" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             弹药管理

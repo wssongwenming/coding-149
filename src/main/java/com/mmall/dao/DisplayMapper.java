@@ -26,7 +26,11 @@ public interface DisplayMapper {
 
     int countByNumber(@Param("number") Integer number, @Param("id") Integer id);
 
+    int countByDeviceIndex(@Param("device_index") Integer device_index, @Param("id") Integer id);
+
     int count();
 
     List<Display> getPage(@Param("page") PageQuery page);
+
+    List<Display> getAll();
 }

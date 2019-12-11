@@ -15,10 +15,12 @@
 
     <context:annotation-config /> <!-- 从spring-servlet.xml里转移过来的 -->
     <context:component-scan base-package="com.mmall.service" /> <!-- 从spring-servlet.xml里转移过来的 -->
-
+    <context:component-scan base-package="com.mmall.rabbitmq" />
     <bean class="com.mmall.common.ApplicationContextHelper" lazy-init="false" /> <!-- 从spring-servlet.xml里转移过来的 -->
 
     <import resource="redis.xml" />
+    <import resource="application-rabbitProduce.xml"/>
+    <import resource="application-rabbitConsume.xml"/>
 
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <property name="driverClassName" value="${db.driverClassName}" />

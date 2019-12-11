@@ -35,7 +35,7 @@ public class DisplayService {
             throw new ParamException("设备IP地址已经存在");
         }
         Display display = Display.builder().name(param.getName()).mac(param.getMac()).ip(param.getIp())
-                .status(param.getStatus()).number(param.getNumber()).memo(param.getMemo()).build();
+                .status(param.getStatus()).device_index(param.getDevice_index()).number(param.getNumber()).memo(param.getMemo()).build();
         displayMapper.insertSelective(display);
     }
     public PageResult<Display> getPage(PageQuery page) {
@@ -65,13 +65,24 @@ public class DisplayService {
         if (checkExistByNumber(param.getNumber(),param.getId())) {
             throw new ParamException("设备IP地址已经存在");
         }
+        if (checkExistByIndex(param.getDevice_index(),param.getId())) {
+            throw new ParamException("设备编号已经存在");
+        }
         Display before = displayMapper.selectByPrimaryKey(param.getId());
         Preconditions.checkNotNull(before, "待更新的设备不存在");
 
         Display after = Display.builder().id(param.getId()).name(param.getName()).ip(param.getIp())
-                .mac(param.getMac()).status(param.getStatus()).number(param.getNumber()).memo(param.getMemo()).build();
+                .mac(param.getMac()).status(param.getStatus()).device_index(param.getDevice_index()).number(param.getNumber()).memo(param.getMemo()).build();
         displayMapper.updateByPrimaryKeySelective(after);
 
+    }
+    public PageResult<Display> getAll() {
+        int count = displayMapper.count();
+        if (count > 0) {
+            List<Display> list = displayMapper.getAll();
+            return PageResult.<Display>builder().total(count).data(list).build();
+        }
+        return PageResult.<Display>builder().build();
     }
 
     private boolean checkExistByIp(String ip,Integer id) {
@@ -82,5 +93,8 @@ public class DisplayService {
     }
     private boolean checkExistByNumber(Integer number,Integer id) {
         return displayMapper.countByNumber(number,id) > 0;
+    }
+    private boolean checkExistByIndex(Integer device_index,Integer id) {//设备编号
+        return displayMapper.countByDeviceIndex(device_index,id) > 0;
     }
 }

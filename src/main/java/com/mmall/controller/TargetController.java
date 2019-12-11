@@ -54,6 +54,11 @@ public class TargetController {
         targetService.update(param);
         return JsonData.success();
     }
-
+    @RequestMapping("/target.json")//
+    @ResponseBody
+    public JsonData getAll() {
+        PageResult<Target> result =targetService.getAll();
+        return JsonData.success(result);
+    }
 
 }

@@ -9,9 +9,10 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="index" property="index" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, mac, number, status, ip, memo
+    id, name, mac, number, status, ip, memo, index
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +27,10 @@
   <insert id="insert" parameterType="com.mmall.model.Display" >
     insert into display (id, name, mac, 
       number, status, ip, 
-      memo)
+      memo, index)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR}, 
       #{number,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, 
-      #{memo,jdbcType=VARCHAR})
+      #{memo,jdbcType=VARCHAR}, #{index,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.mmall.model.Display" >
     insert into display
@@ -55,6 +56,9 @@
       <if test="memo != null" >
         memo,
       </if>
+      <if test="index != null" >
+        index,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -77,6 +81,9 @@
       </if>
       <if test="memo != null" >
         #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="index != null" >
+        #{index,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -101,6 +108,9 @@
       <if test="memo != null" >
         memo = #{memo,jdbcType=VARCHAR},
       </if>
+      <if test="index != null" >
+        index = #{index,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -111,7 +121,8 @@
       number = #{number,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       ip = #{ip,jdbcType=VARCHAR},
-      memo = #{memo,jdbcType=VARCHAR}
+      memo = #{memo,jdbcType=VARCHAR},
+      index = #{index,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

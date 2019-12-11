@@ -3,6 +3,7 @@ package com.mmall.controller;
 import com.mmall.beans.PageQuery;
 import com.mmall.beans.PageResult;
 import com.mmall.common.JsonData;
+import com.mmall.model.Camera;
 import com.mmall.model.Display;
 import com.mmall.param.DisplayParam;
 import com.mmall.service.DisplayService;
@@ -43,6 +44,13 @@ public class DisplayController {
     public JsonData delete(@RequestParam("id") int id) {
         displayService.delete(id);
         return JsonData.success();
+    }
+
+    @RequestMapping("/display.json")//
+    @ResponseBody
+    public JsonData getAll() {
+        PageResult<Display> result = displayService.getAll();
+        return JsonData.success(result);
     }
     @RequestMapping("/update.json")
     @ResponseBody

@@ -26,7 +26,11 @@ public interface TargetMapper {
 
     int countByNumber(@Param("number") Integer number, @Param("id") Integer id);
 
+    int countByDeviceIndex(@Param("device_index") Integer device_index, @Param("id") Integer id);
+
     int count();
 
     List<Target> getPage(@Param("page") PageQuery page);
+
+    List<Target> getAll();
 }

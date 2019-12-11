@@ -15,6 +15,8 @@ public class Target {
 
     private String memo;
 
+    private Integer index;
+
     public Integer getId() {
         return id;
     }
@@ -69,5 +71,13 @@ public class Target {
 
     public void setMemo(String memo) {
         this.memo = memo == null ? null : memo.trim();
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }

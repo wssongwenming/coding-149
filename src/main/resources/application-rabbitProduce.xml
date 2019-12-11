@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+				        http://www.springframework.org/schema/rabbit
+				        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <!-- 定义连接工厂,用于创建连接等 -->
+    <rabbit:connection-factory id="connectionFactory" username="client" password="client" host="127.0.0.1" port="5672"/>
+
+    <!-- 定义admin,producer中的exchange,queue会自动的利用该admin自动在spring中生成 -->
+    <rabbit:admin connection-factory="connectionFactory"/>
+
+    <!-- 定义rabbitmq模板,用于接收以及发送消息 -->
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="hjexchange" routing-key="wzh"/>
+
+    <!-- 利用admin来定义队列,spring会自动根据下面的定义创建队列
+    	队列名	是否持久化	是否是排他队列	不使用的时候是否删除	-->
+    <rabbit:queue name="com.ty.test" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <!-- 定义Exchange,并且将队列与Exchange绑定,设定Routing Key -->
+    <!-- name为Echange的name -->
+    <rabbit:direct-exchange name="hjexchange" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding key="com.ty.test" queue="com.ty.test"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+</beans>

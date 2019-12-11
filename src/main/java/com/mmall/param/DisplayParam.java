@@ -12,9 +12,10 @@ import javax.validation.constraints.Pattern;
 @ToString
 public class DisplayParam {
     private Integer id;
+    private Integer device_index;
     @NotBlank(message = "设备名称不可以为空")
     private String name;
-
+    @NotBlank(message = "Mac不可以为空")
     private String mac;
 
     @Pattern(regexp = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))",message = "IP地址格式无效")

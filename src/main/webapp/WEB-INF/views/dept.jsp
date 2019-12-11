@@ -144,7 +144,7 @@
     <form id="userForm">
         <table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
             <tr>
-                <td style="width: 80px;"><label for="parentId">所在部门</label></td>
+                <td style="width: 80px;"><label for="deptSelectId">所在部门</label></td>
                 <td>
                     <select id="deptSelectId" name="deptId" data-placeholder="选择部门" style="width: 200px;"></select>
                 </td>
@@ -204,7 +204,7 @@
             <div class="dd2-content" style="cursor:pointer;">
             {{name}}
             <span style="float:right;">
-                <a class="green dept-edit" href="#" data-id="{{id}}" >
+                <a class="green dept-edit" href="#" data-id="{{id}}">
                     <i class="ace-icon fa fa-pencil bigger-100"></i>
                 </a>
                 &nbsp;
@@ -559,7 +559,6 @@
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
                     optionStr = "";
                     optionTrainingStr="";
-
                     recursiveRenderDeptSelect(deptList, 1);
                     recursiveRenderTrainingSelect(trainingList);
                     console.log("   optionTrainingStr="+optionStr);
@@ -731,7 +730,7 @@
                         }
                         blank += "∟";
                     }
-                    optionStr += Mustache.render("<option value='{{id}}'>{{name}}</option>", {id: dept.id, name: blank + dept.name});
+                    optionStr += Mustache.render("<option value='{{id}}'>{{name}}</option>",{id: dept.id, name: blank + dept.name});
                     if (dept.deptList && dept.deptList.length > 0) {
                         recursiveRenderDeptSelect(dept.deptList, level + 1);
                     }

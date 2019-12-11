@@ -9,12 +9,13 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="device_index" property="device_index" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, mac, number, status, ip, memo
+    id, name, mac, number, status, ip, memo, device_index
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from display
     where id = #{id,jdbcType=INTEGER}
@@ -24,12 +25,12 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mmall.model.Display" >
-    insert into display (id, name, mac, 
-      number, status, ip, 
-      memo)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR}, 
-      #{number,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, 
-      #{memo,jdbcType=VARCHAR})
+    insert into display (id, name, mac,
+      number, status, ip,
+      memo, device_index)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{mac,jdbcType=VARCHAR},
+      #{number,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR},
+      #{memo,jdbcType=VARCHAR}, #{device_index,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.mmall.model.Display" >
     insert into display
@@ -55,6 +56,9 @@
       <if test="memo != null" >
         memo,
       </if>
+      <if test="device_index != null" >
+        device_index,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -77,6 +81,9 @@
       </if>
       <if test="memo != null" >
         #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="device_index != null" >
+        #{device_index,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -101,6 +108,9 @@
       <if test="memo != null" >
         memo = #{memo,jdbcType=VARCHAR},
       </if>
+      <if test="device_index != null" >
+        device_index = #{device_index,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -111,13 +121,23 @@
       number = #{number,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       ip = #{ip,jdbcType=VARCHAR},
-      memo = #{memo,jdbcType=VARCHAR}
+      memo = #{memo,jdbcType=VARCHAR},
+      device_index = #{device_index,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="countByIp" parameterType="map" resultType="int">
     SELECT count(1)
     FROM display
     WHERE ip = #{ip}
+    <if test="id != null">
+      AND id != #{id}
+    </if>
+  </select>
+
+  <select id="countByDeviceIndex" parameterType="map" resultType="int">
+    SELECT count(1)
+    FROM display
+    WHERE device_index = #{device_index}
     <if test="id != null">
       AND id != #{id}
     </if>
@@ -149,7 +169,13 @@
   <select id="getPage" parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     FROM display
-    ORDER BY id ASC
+    ORDER BY device_index ASC
     LIMIT #{page.offset}, #{page.pageSize}
+  </select>
+
+  <select id="getAll" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM display
+    ORDER BY id ASC
   </select>
 </mapper>

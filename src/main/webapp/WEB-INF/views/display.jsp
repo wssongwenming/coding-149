@@ -47,6 +47,9 @@
                                 设备名称
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
+                                设备编号
+                            </th>
+                            <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 MAC地址
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
@@ -83,6 +86,12 @@
                 <td style="width: 200px;"><input type="text" name="name" id="device_name" value="显靶终端" class="text ui-widget-content ui-corner-all"></td>
             </tr>
             <tr>
+                <td style="width: 120px;"><label for="deviceIndex">设备编号</label></td>
+                <td>
+                    <select id="deviceIndex" name="device_index" data-placeholder="选择设备编号" style="width: 170px;"></select>
+                </td>
+            </tr>
+            <tr>
                 <td><label for="device_mac">MAC地址</label></td>
                 <td><input type="text" name="mac" id="device_mac" value="" class="text ui-widget-content ui-corner-all"></td>
             </tr>
@@ -93,18 +102,18 @@
 
             <tr>
                 <td><label for="device_number">所处靶位编号</label></td>
-                <td><input type="text" name="number" id="device_number" value=""  class="text ui-widget-content ui-corner-all"></td>
+                <td><input type="text" name="number" id="device_number" value="" placeholder="未知" readonly class="text ui-widget-content ui-corner-all"></td>
             </tr>
 
             <tr>
                 <td><label for="device_status">设备状态</label></td>
                 <td>
                     <select id="device_status" name="status" data-placeholder="选择状态" style="width: 150px;">
+                        <option value="2">新添加</option>
                         <option value="0">正常</option>
                         <option value="1">异常</option>
                     </select>
                 </td>
-
             </tr>
             <tr>
                 <td><label for="display_memo">备注</label></td>
@@ -117,6 +126,7 @@
 {{#displayList}}
 <tr role="row"  data-id="{{id}}"><!--even -->
     <td><a href="#" class="display-edit" data-id="{{id}}">{{name}}</a></td>
+    <td>{{device_index}}</td>
     <td>{{mac}}</td>
     <td>{{ip}}</td>
     <td>{{number}}</td>
@@ -137,8 +147,22 @@
 {{/displayList}}
 </script>
 <script type="application/javascript">
-    $(function() {
 
+
+    Array.prototype.remove = function (obj) {
+        for (var i = 0; i < this.length; i++) {//遍历数组。
+            var temp = this[i];
+            if (temp == obj) {//当遍历到传入的下标/元素位置时，进入下面循环。
+                for (var j = i; j < this.length; j++) {//将下标为i之后的元素，往前移动。这样就覆盖了该下标。最后记得数组长度减1.
+                    this[j] = this[j + 1];
+                }
+                this.length = this.length - 1;
+            }
+        }
+    }
+
+    $(function() {
+        var deviceIndexOptionStr = "";
         var displayMap = {}; // 存储map格式的训练计划信息
         var displayListTemplate = $('#displayListTemplate').html();
         Mustache.parse(displayListTemplate);
@@ -152,6 +176,8 @@
                 title: "新增拍照设备",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                    deviceIndexOptionStr = "";
+                    loadDisplayIndexArrayForSelect("");
                     $("#displayForm")[0].reset();
                 },
                 buttons : {
@@ -171,6 +197,34 @@
             });
         });
 
+        function loadDisplayIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+            $.ajax({
+                url: "/sys/display/display.json",
+                success : function (result) {
+                    var device_index_array=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
+                    if (result.ret) {
+                        var displaylist = result.data.data;
+                        if(displaylist!=null) {
+                            $.each(displaylist, function (i, display) {
+                                var device_index = display.device_index;
+                                device_index_array.remove(device_index);
+                            });
+                        }
+                        $(device_index_array).each(function (i, device_index) {
+                            deviceIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#deviceIndex").html(deviceIndexOptionStr);
+                        }else {
+                            $("#deviceIndex").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + deviceIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("加载部门列表", result.msg, false);
+                    }
+                }
+            })
+        }
         function updateDisplay(isCreate, successCallback, failCallback) {
             $.ajax({
                 url: isCreate ? "/sys/display/save.json" : "/sys/display/update.json",
@@ -224,7 +278,7 @@
                     var rendered = Mustache.render(displayListTemplate, {
                         displayList: result.data.data,
                         "showStatus": function() {
-                            return this.status == 0 ? '正常' : '异常';
+                            return this.status == 0 ? '正常' :(this.status == 1 ? '异常':"新添加" );
                         }
                     });
                     $("#displayList").html(rendered);
@@ -257,6 +311,8 @@
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
                         $("#displayForm")[0].reset();
                         var targetDisplay = displayMap[displayId];
+                        deviceIndexOptionStr = ""
+                        loadDisplayIndexArrayForSelect(targetDisplay.device_index);
                         if (targetDisplay) {
                             $("#displayId").val(targetDisplay.id);
                             $("#device_name").val(targetDisplay.name);

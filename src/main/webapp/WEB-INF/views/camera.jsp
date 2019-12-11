@@ -47,6 +47,9 @@
                                 设备名称
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
+                                设备编号
+                            </th>
+                            <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 MAC地址
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
@@ -83,6 +86,12 @@
                 <td style="width: 200px;"><input type="text" name="name" id="device_name" value="照靶终端" class="text ui-widget-content ui-corner-all"></td>
             </tr>
             <tr>
+                <td style="width: 120px;"><label for="deviceIndex">设备编号</label></td>
+                <td>
+                    <select id="deviceIndex" name="device_index" data-placeholder="选择设备编号" style="width: 170px;"></select>
+                </td>
+            </tr>
+            <tr>
                 <td><label for="device_mac">MAC地址</label></td>
                 <td><input type="text" name="mac" id="device_mac" value="" class="text ui-widget-content ui-corner-all"></td>
             </tr>
@@ -93,13 +102,14 @@
 
             <tr>
                 <td><label for="device_number">所处靶位编号</label></td>
-                <td><input type="text" name="number" id="device_number" value=""  class="text ui-widget-content ui-corner-all"></td>
+                <td><input type="text" name="number" id="device_number" value="" placeholder="未知" readonly  class="text ui-widget-content ui-corner-all"></td>
             </tr>
 
             <tr>
                 <td><label for="device_status">设备状态</label></td>
                 <td>
-                    <select id="device_status" name="status" data-placeholder="选择状态" style="width: 150px;">
+                    <select id="device_status" name="status" data-placeholder="选择状态" style="width: 170px;">
+                        <option value="2">新添加</option>
                         <option value="0">正常</option>
                         <option value="1">异常</option>
                     </select>
@@ -117,6 +127,7 @@
 {{#cameraList}}
 <tr role="row"  data-id="{{id}}"><!--even -->
     <td><a href="#" class="camera-edit" data-id="{{id}}">{{name}}</a></td>
+    <td>{{device_index}}</td>
     <td>{{mac}}</td>
     <td>{{ip}}</td>
     <td>{{number}}</td>
@@ -137,22 +148,40 @@
 {{/cameraList}}
 </script>
 <script type="application/javascript">
+
+    Array.prototype.remove = function (obj) {
+        for (var i = 0; i < this.length; i++) {//遍历数组。
+            var temp = this[i];
+            if (temp == obj) {//当遍历到传入的下标/元素位置时，进入下面循环。
+                for (var j = i; j < this.length; j++) {//将下标为i之后的元素，往前移动。这样就覆盖了该下标。最后记得数组长度减1.
+                    this[j] = this[j + 1];
+                }
+                this.length = this.length - 1;
+            }
+        }
+    }
+
     $(function() {
 
+        var deviceIndexOptionStr = "";
         var cameraMap = {}; // 存储map格式的训练计划信息
         var cameraListTemplate = $('#cameraListTemplate').html();
         Mustache.parse(cameraListTemplate);
 
         loadCameraList();
+        //loadCameraIndexArrayForSelect();//设备编号是有限制的，加完的就不能出现
 
-         $(".camera-add").click(function() {
+        $(".camera-add").click(function() {
             $("#dialog-camera-form").dialog({
                 modal: true,
                 minWidth: 450,
                 title: "新增拍照设备",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                    deviceIndexOptionStr = "";
+                    loadCameraIndexArrayForSelect("");
                     $("#cameraForm")[0].reset();
+                    //$("#deviceIndex").html(deviceIndexOptionStr);放在这里总出错，后来放在了loadCameraIndexArrayForSelect()里面
                 },
                 buttons : {
                     "添加": function(e) {
@@ -217,6 +246,40 @@
                 }
             })
         }
+        function loadCameraIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+            $.ajax({
+                url: "/sys/camera/camera.json",
+                success : function (result) {
+                    var device_index_array=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
+                    if (result.ret) {
+                        var cameralist= result.data.data;
+                        if(cameralist!=null) {
+                            //var cameralist = result.data.data;
+                            $.each(cameralist, function(i, camera) {
+                                var device_index=camera.device_index;
+                                device_index_array.remove(device_index);
+                            });
+                        }
+
+                        $(device_index_array).each(function (i, device_index) {
+
+                            deviceIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#deviceIndex").html(deviceIndexOptionStr);
+                        }else {
+                            $("#deviceIndex").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + deviceIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("加载部门列表", result.msg, false);
+                    }
+                }
+            })
+        }
+
+
 
         function renderCameraListAndPage(result, url) {
             if (result.ret) {
@@ -224,7 +287,7 @@
                     var rendered = Mustache.render(cameraListTemplate, {
                         cameraList: result.data.data,
                         "showStatus": function() {
-                            return this.status == 0 ? '正常' : '异常';
+                            return this.status == 0 ? '正常' :(this.status == 1 ? '异常':"新添加" );
                         }
                     });
                     $("#cameraList").html(rendered);
@@ -255,10 +318,16 @@
                     title: "编辑照靶设备",
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+
                         $("#cameraForm")[0].reset();
+
                         var targetCamera = cameraMap[cameraId];
+                        deviceIndexOptionStr = ""
+                        loadCameraIndexArrayForSelect(targetCamera.device_index);
+                        //$("#deviceIndex").html(Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: targetCamera.device_index})+deviceIndexOptionStr);//需要把当前设备的编号加入select
                         if (targetCamera) {
                             $("#cameraId").val(targetCamera.id);
+                            $("#deviceIndex").val(targetCamera.device_index);
                             $("#device_name").val(targetCamera.name);
                             $("#device_mac").val(targetCamera.mac);
                             $("#device_ip").val(targetCamera.ip);
