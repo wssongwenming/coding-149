@@ -129,7 +129,7 @@
                         </ul>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/device/group.page" target="_blank">
+                        <a class="popstyle" href="/sys/devicegroup/devicegroup.page" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             靶位编组
                         </a>

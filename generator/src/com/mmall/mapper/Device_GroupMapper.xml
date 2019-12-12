@@ -15,7 +15,7 @@
     id, group_index, target_id, camera_id, display_id, number, status, memo
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
+    select 
     <include refid="Base_Column_List" />
     from device_group
     where id = #{id,jdbcType=INTEGER}
@@ -25,11 +25,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.mmall.model.Device_Group" >
-    insert into device_group (id, group_index, target_id,
-      camera_id, display_id, number,
+    insert into device_group (id, group_index, target_id, 
+      camera_id, display_id, number, 
       status, memo)
-    values (#{id,jdbcType=INTEGER}, #{groupIndex,jdbcType=INTEGER}, #{targetId,jdbcType=INTEGER},
-      #{cameraId,jdbcType=INTEGER}, #{displayId,jdbcType=INTEGER}, #{number,jdbcType=INTEGER},
+    values (#{id,jdbcType=INTEGER}, #{groupIndex,jdbcType=INTEGER}, #{targetId,jdbcType=INTEGER}, 
+      #{cameraId,jdbcType=INTEGER}, #{displayId,jdbcType=INTEGER}, #{number,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mmall.model.Device_Group" >
@@ -125,59 +125,4 @@
       memo = #{memo,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-
-  <select id="countByTargetId" parameterType="map" resultType="int">
-    SELECT count(1)
-    FROM device_group
-    WHERE target_id = #{targetId}
-    <if test="id != null">
-      AND id != #{id}
-    </if>
-  </select>
-
-  <select id="countByCameraId" parameterType="map" resultType="int">
-    SELECT count(1)
-    FROM device_group
-    WHERE camera_id = #{cameraId}
-    <if test="id != null">
-      AND id != #{id}
-    </if>
-  </select>
-
-  <select id="countDisplayId" parameterType="map" resultType="int">
-    SELECT count(1)
-    FROM device_group
-    WHERE display_id = #{displayId}
-    <if test="id != null">
-      AND id != #{id}
-    </if>
-  </select>
-
-  <select id="countByGroupIndex" parameterType="map" resultType="int">
-    SELECT count(1)
-    FROM device_group
-    WHERE group_index = #{group_index}
-    <if test="id != null">
-      AND id != #{id}
-    </if>
-  </select>
-
-  <select id="count" resultType="int">
-    SELECT count(1)
-    FROM device_group
-  </select>
-
-  <select id="getPage" parameterType="map" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />
-    FROM device_group
-    ORDER BY group_index ASC
-    LIMIT #{page.offset}, #{page.pageSize}
-  </select>
-
-  <select id="getAll" parameterType="map" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />
-    FROM device_group
-    ORDER BY group_index ASC
-  </select>
 </mapper>

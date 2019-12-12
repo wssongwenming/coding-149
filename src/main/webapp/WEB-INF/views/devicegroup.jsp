@@ -28,7 +28,7 @@
         <div class="table-header">
             靶位列表&nbsp;&nbsp;
             <a class="green" href="#">
-                <i class="ace-icon fa fa-plus-circle orange bigger-130  training-add"></i>
+                <i class="ace-icon fa fa-plus-circle orange bigger-130  device-group-add"></i>
             </a>
         </div>
         <div>
@@ -54,16 +54,16 @@
                                 靶位编号
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
-                                组织单位
+                                靶机设备编号
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
-                                参训人员数量
+                                照靶终端编号
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
-                                靶场名称/地址
+                                显靶终端编号
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
-                                日期
+                                靶位状态
                             </th>
                             <th tabindex="0" aria-controls="dynamic-table" rowspan="1" colspan="1">
                                 备注
@@ -71,9 +71,9 @@
                             <th class="sorting_disabled" rowspan="1" colspan="1" aria-label=""></th>
                         </tr>
                         </thead>
-                        <tbody id="trainingList"></tbody>
+                        <tbody id="deviceGroupList"></tbody>
                     </table>
-                    <div class="row" id="trainingPage">
+                    <div class="row" id="deviceGroupPage">
                     </div>
                 </div>
             </div>
@@ -81,102 +81,273 @@
     </div>
 </div>
 
-<div id="dialog-training-form" style="display: none;">
-    <form id="trainingForm">
+<div id="dialog-device-group-form" style="display: none;">
+    <form id="deviceGroupForm">
         <table class="table table-striped table-bordered table-hover dataTable no-footer" role="grid">
             <tr>
-                <td style="width: 80px;"><label for="training_title">训练计划名称</label></td>
-                <input type="hidden" name="id" id="trainingId"/>
-                <td style="width: 200px;"><input type="text" name="title" id="training_title" value="" class="text ui-widget-content ui-corner-all"></td>
+                <td style="width: 80px;"><label for="device_group_index">靶位编号</label></td>
+                <input type="hidden" name="id" id="device_group_id"/>
+                <td>
+                    <select id="device_group_index" name="group_index" data-placeholder="选择靶位编号" style="width: 170px;"></select>
+                </td>
             </tr>
             <tr>
-                <td><label for="training_orgDept">组织单位</label></td>
-                <td><input type="text" name="orgDept" id="training_orgDept" value="" class="text ui-widget-content ui-corner-all"></td>
+                <td><label for="device_group_target_id">靶机设备</label></td>
+                <td>
+                    <select id="device_group_target_id" name="target_id" data-placeholder="选择靶机编号" style="width: 170px;"></select>
+                </td>
             </tr>
             <tr>
-                <td><label for="training_traineeNumber">参训人员数量</label></td>
-                <td><input type="text" name="traineeNumber" id="training_traineeNumber" value="" class="text ui-widget-content ui-corner-all"></td>
-            </tr>
-
-            <tr>
-                <td><label for="training_addr">靶场名称/地址</label></td>
-                <td><input type="text" name="addr" id="training_addr" value=""  class="text ui-widget-content ui-corner-all"></td>
-            </tr>
-
-            <tr>
-                <td><label for="training_dot">日期 </label></td>
-                <td><input type="text" name="dot" id="training_dot" placeholder="请选择日期" value=""  class="text ui-widget-content ui-corner-all"></td>
-
+                <td><label for="device_group_camera_id">照靶终端</label></td>
+                <td>
+                    <select id="device_group_camera_id" name="camera_id" data-placeholder="选择照靶终端编号" style="width: 170px;"></select>
+                </td>
             </tr>
             <tr>
-                <td><label for="training_memo">备注</label></td>
-                <td><textarea name="memo" id="training_memo" class="text ui-widget-content ui-corner-all" rows="3" cols="25"></textarea></td>
+                <td><label for="device_group_display_id">显靶终端</label></td>
+                <td>
+                    <select id="device_group_display_id" name="display_id" data-placeholder="选择照靶终端编号" style="width: 170px;"></select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="device_group_status">靶位状态</label></td>
+                <td>
+                    <select id="device_group_status" name="status" data-placeholder="选择照靶终端编号" style="width: 170px;">
+                        <option value="000">000</option>
+                        <option value="001">001</option>
+                        <option value="011">011</option>
+                        <option value="010">010</option>
+                        <option value="111">111</option>
+                        <option value="100">100</option>
+                        <option value="110">110</option>
+                        <option value="101">101</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="device_group_memo">备注</label></td>
+                <td><textarea name="memo" id="device_group_memo" class="text ui-widget-content ui-corner-all" rows="3" cols="25"></textarea></td>
             </tr>
         </table>
     </form>
 </div>
-<script id="trainingListTemplate" type="x-tmpl-mustache">
-{{#trainingList}}
+<script id="deviceGroupListTemplate" type="x-tmpl-mustache">
+{{#deviceGroupList}}
 <tr role="row"  data-id="{{id}}"><!--even -->
-    <td><a href="#" class="training-edit" data-id="{{id}}">{{title}}</a></td>
-    <td>{{orgDept}}</td>
-    <td>{{traineeNumber}}</td>
-    <td>{{addr}}</td>
-    <td>{{dot}}</td>
+    <td><a href="#" class="device-group-edit" data-id="{{id}}">{{groupIndex}}</a></td>
+    <td>{{targetId}}</td>
+    <td>{{cameraId}}</td>
+    <td>{{displayId}}</td>
+    <td>{{status}}</td>
     <td>{{memo}}</td>
     <td>
         <div class="hidden-sm hidden-xs action-buttons">
-            <a class="green training-edit" href="#" data-id="{{id}}">
+            <a class="green device-group-edit" href="#" data-id="{{id}}" target-id="{{targetId}}" camera-id="{{cameraId}}" display-id="{{displayId}}">
                 <i class="ace-icon fa fa-pencil bigger-100"></i>
             </a>
             &nbsp;
-            <a class="red training-delete" href="#" data-id="{{id}}" data-name="{{title}}">
+            <a class="red device-group-delete" href="#" data-id="{{id}}" data-name="靶位">
                 <i class="ace-icon fa fa-trash-o bigger-100"></i>
             </a>
          </div>
     </td>
 </tr>
-{{/trainingList}}
+{{/deviceGroupList}}
 </script>
 <script type="application/javascript">
     $(function() {
+        Array.prototype.remove = function (obj) {
+            for (var i = 0; i < this.length; i++) {//遍历数组。
+                var temp = this[i];
+                if (temp == obj) {//当遍历到传入的下标/元素位置时，进入下面循环。
+                    for (var j = i; j < this.length; j++) {//将下标为i之后的元素，往前移动。这样就覆盖了该下标。最后记得数组长度减1.
+                        this[j] = this[j + 1];
+                    }
+                    this.length = this.length - 1;
+                }
+            }
+        }
 
-        var trainingMap = {}; // 存储map格式的训练计划信息
-        var trainingListTemplate = $('#trainingListTemplate').html();
-        Mustache.parse(trainingListTemplate);
+        var targetMap = {}; // 存储已有靶位信息map格式的靶机信息
+        var cameraMap = {};// 存储已有靶位信息map格式的照靶终端信息
+        var displayMap= {};// 存储已有靶位信息map格式的显靶终端信息
+        var deviceGroupMap={};//存储了已有的靶位信息
 
-        loadTrainingList();
+        var groupIndexOptionStr = "";
+        var cameraIndexOptionStr="";
+        var displayIndexOptionStr="";
+        var targetIndexOptionStr="";
 
-        $(".training-add").click(function() {
-            $("#dialog-training-form").dialog({
+
+        //var deviceGroupMap = {}; //
+        var deviceGroupListTemplate = $('#deviceGroupListTemplate').html();
+        Mustache.parse(deviceGroupListTemplate);
+        loadDeviceGroupList();
+
+        $(".device-group-add").click(function() {
+            $("#dialog-device-group-form").dialog({
                 modal: true,
                 minWidth: 450,
                 title: "新增靶位",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
-                    $("#trainingForm")[0].reset();
+                    groupIndexOptionStr = "";
+                    loadGroupIndexArrayForSelect("");
+                    targetIndexOptionStr="";
+                    loadTargetIndexArrayForSelect("");
+                    cameraIndexOptionStr="";
+                    loadCameraIndexArrayForSelect("");
+                    displayIndexOptionStr="";
+                    loadDisplayIndexArrayForSelect("");
+                    $("#deviceGroupForm")[0].reset();
                 },
                 buttons : {
                     "添加": function(e) {
                         e.preventDefault();
-                        updateTraining(true, function (data) {
-                            $("#dialog-training-form").dialog("close");
-                            loadTrainingList();
+                        updateDeviceGroup(true, function (data) {
+                            $("#dialog-device-group-form").dialog("close");
+                            loadDeviceGroupList();
                         }, function (data) {
                             showMessage("新增训练计划", data.msg, false);
                         })
                     },
                     "取消": function () {
-                        $("#dialog-training-form").dialog("close");
+                        $("#dialog-device-group-form").dialog("close");
                     }
                 }
             });
         });
-
-        function updateTraining(isCreate, successCallback, failCallback) {
+        function loadGroupIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
             $.ajax({
-                url: isCreate ? "/sys/training/save.json" : "/sys/training/update.json",
-                data: $("#trainingForm").serializeArray(),
+                url: "/sys/devicegroup/devicegroup.json",
+                success : function (result) {
+                    var device_group_index_array=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+                    if (result.ret) {
+                        var deviceGrouplist= result.data.data;
+                        if(deviceGrouplist!=null){
+                            $.each(deviceGrouplist, function(i, devicegroup) {
+                                var device_group_index=devicegroup.groupIndex;
+                                deviceGroupMap[device_group_index]=devicegroup;
+                                //showMessage("加载部门列表", JSON.stringify(devicegroup), false);
+                                device_group_index_array.remove(device_group_index);
+                            });
+                        }
+                        $(device_group_index_array).each(function (i,device_index) {
+                            groupIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#device_group_index").html(groupIndexOptionStr);
+                        }else {
+                            $("#device_group_index").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + groupIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("提示", result.msg, false);
+                    }
+                }
+            })
+        }
+        function loadTargetIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+            $.ajax({
+                url: "/sys/target/target.json",
+                success : function (result) {
+                    var target_index_array=[];
+                    if (result.ret) {
+                        var targetlist= result.data.data;
+                        if(targetlist!=null) {
+                            $.each(targetlist, function(i, target) {
+                                var target_index=target.device_index;
+                                target_index_array.push(target_index);
+                            });
+                        }
+                        $.map(deviceGroupMap,function(devicegroup,key){
+                            target_index_array.remove(devicegroup.targetId);
+                        });
+                        targetIndexOptionStr="";
+                        $(target_index_array).each(function (i,device_index) {
+                            targetIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#device_group_target_id").html(targetIndexOptionStr);
+                        }else {
+                            $("#device_group_target_id").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + targetIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("提示", result.msg, false);
+                    }
+                }
+            })
+        }
+
+
+        function loadCameraIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+            $.ajax({
+                url: "/sys/camera/camera.json",
+                success : function (result) {
+                    var camera_index_array=[];
+                    if (result.ret) {
+                        var cameralist= result.data.data;
+                        if(cameralist!=null) {
+                            $.each(cameralist, function(i, camera) {
+                                var camera_index=camera.device_index;
+                                camera_index_array.push(camera_index);
+                            });
+                        }
+                        $.map(deviceGroupMap,function(devicegroup,key){
+                            camera_index_array.remove(devicegroup.cameraId);
+                        });
+                        cameraIndexOptionStr="";
+                        $(camera_index_array).each(function (i,device_index) {
+                            cameraIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#device_group_camera_id").html(cameraIndexOptionStr);
+                        }else {
+                            $("#device_group_camera_id").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + cameraIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("提示", result.msg, false);
+                    }
+                }
+            })
+        }
+
+        function loadDisplayIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+            $.ajax({
+                url: "/sys/display/display.json",
+                success : function (result) {
+                    var display_index_array=[];//存储了所有display的编号，然后去除掉已经编入靶位的该类设备编号就是点前展示的可供选择的display编号
+                    if (result.ret) {
+                        var displaylist= result.data.data;
+                        if(displaylist!=null) {
+                            $.each(displaylist, function(i, display) {
+                                var display_index=display.device_index;
+                                display_index_array.push(display_index);
+                            });
+                        }
+                        $.map(deviceGroupMap,function(devicegroup,key){
+                            display_index_array.remove(devicegroup.displayId);//去掉已经编组的display
+                        });
+                        displayIndexOptionStr="";
+                        $(display_index_array).each(function (i,device_index) {
+                            displayIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
+                        });
+                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                            $("#device_group_display_id").html(displayIndexOptionStr);
+                        }else {
+                            $("#device_group_display_id").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + cameraIndexOptionStr);
+                        }
+                    } else {
+                        showMessage("提示", result.msg, false);
+                    }
+                }
+            })
+        }
+
+        function updateDeviceGroup(isCreate, successCallback, failCallback) {
+            $.ajax({
+                url: isCreate ? "/sys/devicegroup/save.json" : "/sys/devicegroup/update.json",
+                data: $("#deviceGroupForm").serializeArray(),
                 type: 'POST',
                 position: {
                     my: 'center',
@@ -204,10 +375,10 @@
                 }
             })
         }
-        function loadTrainingList(){
+        function loadDeviceGroupList(){
             var pageSize = $("#pageSize").val();
-            var url = "/sys/training/page.json";
-            var pageNo = $("#trainingPage .pageNo").val() || 1;
+            var url = "/sys/devicegroup/page.json";
+            var pageNo = $("#deviceGroupPage .pageNo").val() || 1;
             $.ajax({
                 url : url,
                 data: {
@@ -215,92 +386,108 @@
                     pageNo: pageNo
                 },
                 success: function (result) {
-                    renderTrainingListAndPage(result, url);
+                    renderDeviceGroupListAndPage(result, url);
                 }
             })
         }
 
-        function renderTrainingListAndPage(result, url) {
+        function renderDeviceGroupListAndPage(result, url) {
             if (result.ret) {
                 if (result.data.total > 0){
-                    var rendered = Mustache.render(trainingListTemplate, {
-                        trainingList: result.data.data,
+                    var rendered = Mustache.render(deviceGroupListTemplate, {
+                        deviceGroupList: result.data.data,
                     });
-                    $("#trainingList").html(rendered);
-                    bindTrainingClick();
-                    $.each(result.data.data, function(i, training) {
-                        trainingMap[training.id] = training;
+                    $("#deviceGroupList").html(rendered);
+                    bindDeviceGroupClick();
+                    $.each(result.data.data, function(i, deviceGroup) {
+                        deviceGroupMap[deviceGroup.id] = deviceGroup;
                     })
                 } else {
-                    $("#trainingList").html('');
+                    $("#deviceGroupList").html('');
                 }
                 var pageSize = $("#pageSize").val();
-                var pageNo = $("#trainingPage .pageNo").val() || 1;
-                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "trainingPage", renderTrainingListAndPage);
+                var pageNo = $("#deviceGroupPage .pageNo").val() || 1;
+                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "deviceGroupPage", renderTrainingListAndPage);
             } else {
                 showMessage("获取部门下用户列表", result.msg, false);
             }
         }
 
-        function bindTrainingClick() {
+        function bindDeviceGroupClick() {
 
-            $(".training-edit").click(function(e) {
+            $(".device-group-edit").click(function(e) {
+
                 e.preventDefault();
+
                 e.stopPropagation();
-                var trainingId = $(this).attr("data-id");
-                $("#dialog-training-form").dialog({
+
+                var deviceGroupId = $(this).attr("data-id");
+
+                var targetId= $(this).attr("target-id");
+
+                var cameraId= $(this).attr("camera-id");
+                var displayId= $(this).attr("display-id");
+                $("#dialog-device-group-form").dialog({
                     modal: true,
                     minWidth: 450,
                     title: "编辑训练计划",
                     open: function(event, ui) {
                         $(".ui-dialog-titlebar-close", $(this).parent()).hide();
-                        $("#trainingForm")[0].reset();
-                        var targetTraining = trainingMap[trainingId];
-                        if (targetTraining) {
-                            $("#trainingId").val(targetTraining.id);
-                            $("#training_title").val(targetTraining.title);
-                            $("#training_orgDept").val(targetTraining.orgDept);
-                            $("#training_traineeNumber").val(targetTraining.traineeNumber);
-                            $("#training_addr").val(targetTraining.addr);
-                            $("#training_dot").val(targetTraining.dot);
-                            $("#training_memo").val(targetTraining.memo);
+                        $("#deviceGroupForm")[0].reset();
+                        var targetDeviceGroup = deviceGroupMap[deviceGroupId];
+                        groupIndexOptionStr  = "";
+                        loadGroupIndexArrayForSelect(targetDeviceGroup.groupIndex);
+                        targetIndexOptionStr="";
+                        loadTargetIndexArrayForSelect(targetId);
+                        cameraIndexOptionStr="";
+                        loadCameraIndexArrayForSelect(targetId);
+                        displayIndexOptionStr="";
+                        loadDisplayIndexArrayForSelect(displayId);
+                        if (targetDeviceGroup) {
+                            $("#device_group_id").val(targetDeviceGroup.id);
+                            $("#device_group_index").val(targetDeviceGroup.groupIndex);
+                            $("#device_group_target_id").val(targetDeviceGroup.targetId);
+                            $("#device_group_camera_id").val(targetDeviceGroup.cameraId);
+                            $("#device_group_status").val(targetDeviceGroup.status);
+                            $("#device_group_memo").val(targetDeviceGroup.memo);
+
                         }
                     },
                     buttons : {
                         "更新": function(e) {
                             e.preventDefault();
-                            updateTraining(false, function (data) {
-                                $("#dialog-training-form").dialog("close");
-                                loadTrainingList();
+                            updateDeviceGroup(false, function (data) {
+                                $("#dialog-device-group-form").dialog("close");
+                                loadDeviceGroupList();
                             }, function (data) {
                                 showMessage("更新训练计划", data.msg, false);
                             })
                         },
                         "取消": function () {
-                            $("#dialog-training-form").dialog("close");
+                            $("#dialog-device-group-form").dialog("close");
                         }
                     }
                 });
             });
 
-            $(".training-delete").click(function (e) {
+            $(".device-group-delete").click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var trainingId = $(this).attr("data-id");
-                var trainingName = $(this).attr("data-name");
-                if (confirm("确定要删除训练计划[" + trainingName + "]吗?")) {
+                var deviceGroupId = $(this).attr("data-id");
+                //var deviceGroupName = $(this).attr("data-name");//就是靶位
+                if (confirm("确定要删除靶位[" + deviceGroupId + "]吗?")) {
                     $.ajax({
-                        url: "/sys/training/delete.json",
+                        url: "/sys/devicegroup/delete.json",
                         data: {
-                            id: trainingId
+                            id: deviceGroupId
                         },
                         type: 'POST',
                         success: function (result) {
                             if (result.ret) {
-                                showMessage("删除训练计划[" + trainingName + "]", "操作成功", true);
-                                loadTrainingList();
+                                showMessage("删除靶位[" + deviceGroupId + "]", "操作成功", true);
+                                loadDeviceGroupList();
                             } else {
-                                showMessage("删除训练计划[" + trainingName + "]", result.msg, false);
+                                showMessage("删除靶位[" + deviceGroupId + "]", result.msg, false);
                             }
                         }
                     });
