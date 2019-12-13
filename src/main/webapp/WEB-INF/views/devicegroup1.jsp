@@ -227,11 +227,11 @@
                     var device_group_index_array=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
                     if (result.ret) {
                         var deviceGrouplist= result.data.data;
-                        deviceGroupMapForSelect={};
+                        deviceGroupMap={};
                         if(deviceGrouplist!=null){
                             $.each(deviceGrouplist, function(i, devicegroup) {
                                 var device_group_index=devicegroup.groupIndex;
-                                deviceGroupMapForSelect[device_group_index]=devicegroup;
+                                deviceGroupMap[device_group_index]=devicegroup;
                                 device_group_index_array.remove(device_group_index);
                             });
 
@@ -274,7 +274,7 @@
                             });
                         }
 
-                        $.map(deviceGroupMapForSelect,function(devicegroup,key){
+                        $.map(deviceGroupMap,function(devicegroup,key){
                             target_index_array.remove(devicegroup.targetId);
                         });
                         targetIndexOptionStr="";
@@ -306,7 +306,7 @@
                                 camera_index_array.push(camera_index);
                             });
                         }
-                        $.map(deviceGroupMapForSelect,function(devicegroup,key){
+                        $.map(deviceGroupMap,function(devicegroup,key){
                             camera_index_array.remove(devicegroup.cameraId);
                         });
                         cameraIndexOptionStr="";
@@ -339,7 +339,7 @@
                             });
                         }
 
-                        $.map(deviceGroupMapForSelect,function(devicegroup,key){
+                        $.map(deviceGroupMap,function(devicegroup,key){
                             display_index_array.remove(devicegroup.displayId);//去掉已经编组的display
                         });
                         displayIndexOptionStr="";
@@ -470,6 +470,7 @@
                         displayIndexOptionStr="";
                         loadDisplayIndexArrayForSelect(targetDeviceGroup.displayId);*/
 
+                        if (targetDeviceGroup) {
                             $("#device_group_id").val(deviceGroupId);
                             $("#device_group_index").val(deviceGroupIndex);
                             $("#device_group_target_id").val(targetId);
@@ -478,6 +479,7 @@
                             $("#device_group_status").val(status);
                             $("#device_group_memo").val(memo);
 
+                        }
                     },
                     buttons : {
                         "更新": function(e) {
