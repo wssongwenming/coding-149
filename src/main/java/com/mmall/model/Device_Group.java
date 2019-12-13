@@ -20,9 +20,9 @@ public class Device_Group {
 
     private Integer displayId;
 
-    private Integer number;
+    private String number;
 
-    private Integer status;
+    private String status;
 
     private String memo;
 
@@ -66,19 +66,19 @@ public class Device_Group {
         this.displayId = displayId;
     }
 
-    public Integer getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

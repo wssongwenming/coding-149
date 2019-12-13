@@ -22,7 +22,7 @@ public class DeviceGroupParam {
     @NotNull(message = "显靶终端编号不可以为空")
     private Integer display_id;
 
-    private Integer status;
+    private String status;
 
     private String memo;
 }

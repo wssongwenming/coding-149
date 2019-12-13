@@ -56,7 +56,6 @@ public class FileUploadController {
             String suffix = fileName.substring(fileName.lastIndexOf("."), fileName.length());//文件后缀
             fileName=new Date().getTime()+"_"+new Random().nextInt(10000)+suffix;//新的文件名
 
-            //先判断文件是否存在
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             String fileAddDate = sdf.format(new Date());
 
@@ -157,7 +156,15 @@ public class FileUploadController {
 
     private void xlsxImp(InputStream inputStream, ArrayList<Object> arrayList,Integer trainingId) throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy\\MM\\dd");
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String fileAddDate = sdf.format(new Date());
+
+        //获取文件夹路径
+        File file1 =new File("d:/upload/photo"+"/"+fileAddDate);
+        //如果文件夹不存在则创建
+        if(!file1 .exists()  && !file1 .isDirectory()){
+            file1 .mkdirs();
+        }
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(inputStream);
         XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
         for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
@@ -175,7 +182,7 @@ public class FileUploadController {
             hashMap.put("status","1");
             hashMap.put("password",MD5Util.encrypt("1234"));
             hashMap.put("trainingid",trainingId);
-            hashMap.put("photo","\\sys\\file\\"+fileAddDate+"\\"+hashMap.get("name")+"\\jpg");
+            hashMap.put("photo","\\sys\\file\\"+"d:\\"+fileAddDate+"\\"+hashMap.get("name")+"\\jpg");
             arrayList.add(hashMap);
         }
     }

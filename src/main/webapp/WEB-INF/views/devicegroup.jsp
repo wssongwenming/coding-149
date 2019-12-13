@@ -134,7 +134,7 @@
 <script id="deviceGroupListTemplate" type="x-tmpl-mustache">
 {{#deviceGroupList}}
 <tr role="row"  data-id="{{id}}"><!--even -->
-    <td><a href="#" class="device-group-edit" data-id="{{id}}">{{groupIndex}}</a></td>
+    <td><a href="#" class="device-group-edit"  data-id="{{id}}">{{groupIndex}}</a></td>
     <td>{{targetId}}</td>
     <td>{{cameraId}}</td>
     <td>{{displayId}}</td>
@@ -142,7 +142,7 @@
     <td>{{memo}}</td>
     <td>
         <div class="hidden-sm hidden-xs action-buttons">
-            <a class="green device-group-edit" href="#" data-id="{{id}}" target-id="{{targetId}}" camera-id="{{cameraId}}" display-id="{{displayId}}">
+            <a class="green device-group-edit" href="#" data-id="{{id}}" group-index="{{groupIndex}}" target-id="{{targetId}}" camera-id="{{cameraId}}" display-id="{{displayId}}" status="{{status}}" memo="{{memo}}">
                 <i class="ace-icon fa fa-pencil bigger-100"></i>
             </a>
             &nbsp;
@@ -185,21 +185,24 @@
         loadDeviceGroupList();
 
         $(".device-group-add").click(function() {
+
+            //loadGroupIndexArrayForSelect("");
+
             $("#dialog-device-group-form").dialog({
                 modal: true,
                 minWidth: 450,
                 title: "新增靶位",
                 open: function(event, ui) {
                     $(".ui-dialog-titlebar-close", $(this).parent()).hide();
+                    $("#deviceGroupForm")[0].reset();
                     groupIndexOptionStr = "";
-                    loadGroupIndexArrayForSelect("");
-                    targetIndexOptionStr="";
+                    loadGroupIndexArrayForSelect("","","","");//加入靶位信息，目的是取得改组编配的target，camera，和display，为其他下拉列表准备
+/*                    targetIndexOptionStr="";
                     loadTargetIndexArrayForSelect("");
                     cameraIndexOptionStr="";
                     loadCameraIndexArrayForSelect("");
                     displayIndexOptionStr="";
-                    loadDisplayIndexArrayForSelect("");
-                    $("#deviceGroupForm")[0].reset();
+                    loadDisplayIndexArrayForSelect("");*/
                 },
                 buttons : {
                     "添加": function(e) {
@@ -217,36 +220,46 @@
                 }
             });
         });
-        function loadGroupIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
+        function loadGroupIndexArrayForSelect(groupindex,targetid,cameraid,displayid) {//这里加了一个参数，就是为了在编辑时将当前的index带入,加到select的上面，编辑时也neng
             $.ajax({
                 url: "/sys/devicegroup/devicegroup.json",
                 success : function (result) {
                     var device_group_index_array=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
                     if (result.ret) {
                         var deviceGrouplist= result.data.data;
+                        deviceGroupMap={};
                         if(deviceGrouplist!=null){
                             $.each(deviceGrouplist, function(i, devicegroup) {
                                 var device_group_index=devicegroup.groupIndex;
                                 deviceGroupMap[device_group_index]=devicegroup;
-                                //showMessage("加载部门列表", JSON.stringify(devicegroup), false);
                                 device_group_index_array.remove(device_group_index);
                             });
+
                         }
                         $(device_group_index_array).each(function (i,device_index) {
                             groupIndexOptionStr += Mustache.render("<option value='{{id}}'>{{id}}</option>",{id: device_index});
 
                         });
-                        if(optionStr==null || optionStr=="" || optionStr=='undefined'){
+                        $("#deviceGroupForm")[0].reset();
+                        if(groupindex==null || groupindex=="" || groupindex=='undefined'){
                             $("#device_group_index").html(groupIndexOptionStr);
                         }else {
-                            $("#device_group_index").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: optionStr}) + groupIndexOptionStr);
+                            $("#device_group_index").html(Mustache.render("<option value='{{id}}'>{{id}}</option>", {id: groupindex}) + groupIndexOptionStr);
                         }
+                        targetIndexOptionStr="";
+                        loadTargetIndexArrayForSelect(targetid);
+                        cameraIndexOptionStr="";
+                        loadCameraIndexArrayForSelect(cameraid);
+                        displayIndexOptionStr="";
+                        loadDisplayIndexArrayForSelect(displayid);
                     } else {
                         showMessage("提示", result.msg, false);
                     }
                 }
             })
         }
+
+
         function loadTargetIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
             $.ajax({
                 url: "/sys/target/target.json",
@@ -260,6 +273,7 @@
                                 target_index_array.push(target_index);
                             });
                         }
+
                         $.map(deviceGroupMap,function(devicegroup,key){
                             target_index_array.remove(devicegroup.targetId);
                         });
@@ -278,7 +292,6 @@
                 }
             })
         }
-
 
         function loadCameraIndexArrayForSelect(optionStr) {//这里加了一个参数，就是为了在编辑时将当前的index带入
             $.ajax({
@@ -399,9 +412,11 @@
                     });
                     $("#deviceGroupList").html(rendered);
                     bindDeviceGroupClick();
+                    deviceGroupMap={};
                     $.each(result.data.data, function(i, deviceGroup) {
                         deviceGroupMap[deviceGroup.id] = deviceGroup;
                     })
+
                 } else {
                     $("#deviceGroupList").html('');
                 }
@@ -423,10 +438,18 @@
 
                 var deviceGroupId = $(this).attr("data-id");
 
+                var deviceGroupIndex=$(this).attr("group-index");
+
                 var targetId= $(this).attr("target-id");
 
                 var cameraId= $(this).attr("camera-id");
+
                 var displayId= $(this).attr("display-id");
+
+                var status=$(this).attr("status");
+
+                var memo=$(this).attr("memo");
+
                 $("#dialog-device-group-form").dialog({
                     modal: true,
                     minWidth: 450,
@@ -436,20 +459,21 @@
                         $("#deviceGroupForm")[0].reset();
                         var targetDeviceGroup = deviceGroupMap[deviceGroupId];
                         groupIndexOptionStr  = "";
-                        loadGroupIndexArrayForSelect(targetDeviceGroup.groupIndex);
-                        targetIndexOptionStr="";
-                        loadTargetIndexArrayForSelect(targetId);
+                        loadGroupIndexArrayForSelect(deviceGroupIndex,targetId,cameraId,displayId);
+                        /*targetIndexOptionStr="";
+                        loadTargetIndexArrayForSelect(targetDeviceGroup.targetId);
                         cameraIndexOptionStr="";
-                        loadCameraIndexArrayForSelect(targetId);
+                        loadCameraIndexArrayForSelect(targetDeviceGroup.cameraId);
                         displayIndexOptionStr="";
-                        loadDisplayIndexArrayForSelect(displayId);
+                        loadDisplayIndexArrayForSelect(targetDeviceGroup.displayId);*/
                         if (targetDeviceGroup) {
-                            $("#device_group_id").val(targetDeviceGroup.id);
-                            $("#device_group_index").val(targetDeviceGroup.groupIndex);
-                            $("#device_group_target_id").val(targetDeviceGroup.targetId);
-                            $("#device_group_camera_id").val(targetDeviceGroup.cameraId);
-                            $("#device_group_status").val(targetDeviceGroup.status);
-                            $("#device_group_memo").val(targetDeviceGroup.memo);
+                            $("#device_group_id").val(deviceGroupId);
+                            $("#device_group_index").val(deviceGroupIndex);
+                            $("#device_group_target_id").val(targetId);
+                            $("#device_group_camera_id").val(cameraId);
+                            $("#device_group_display_id").val(displayId);
+                            $("#device_group_status").val(status);
+                            $("#device_group_memo").val(memo);
 
                         }
                     },
