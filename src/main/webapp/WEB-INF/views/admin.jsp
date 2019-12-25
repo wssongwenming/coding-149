@@ -175,6 +175,55 @@
                     </li>
                 </ul>
             </li>
+
+            <li class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-desktop"></i>
+                    <span class="menu-text">训练开始</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+
+                <b class="arrow"></b>
+
+                <ul class="submenu">
+                    <li class="">
+                        <a class="popstyle" href="/rabbitmq/initcamera?json='initcamera' target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            初始化拍照终端
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/dept/dept.page" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            靶机加装靶纸
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/rabbitmq/signinbypass" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            显靶终端登录
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/sys/trainee/group.json" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            参训(打靶)人员分组
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a class="popstyle" href="/rabbitmq/senddata" target="_blank">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            发送测试数据
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                  </ul>
+            </li>
+
             <li class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-desktop"></i>
@@ -218,9 +267,7 @@
                     <span class="menu-text"> 系统管理 </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
-
                 <b class="arrow"></b>
-
                 <ul class="submenu">
                     <li class="">
                         <a class="popstyle" href="/config/config.page" target="_blank">

@@ -90,7 +90,7 @@
     </init-param>
     <init-param>
       <param-name>exclusionUrls</param-name>
-      <param-value>/sys/user/noAuth.page,/login.page</param-value>
+      <param-value>/sys/user/noAuth.page,/login.page,/sys/trainee/login</param-value>
     </init-param>
   </filter>
   <filter-mapping>

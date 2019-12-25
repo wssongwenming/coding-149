@@ -13,19 +13,34 @@
     <!-- 定义admin,producer中的exchange,queue会自动的利用该admin自动在spring中生成 -->
     <rabbit:admin connection-factory="connectionFactory"/>
 
-    <!-- 定义rabbitmq模板,用于接收以及发送消息 -->
+    <!-- 定义rabbitmq模板,用于接收以及发送消息exchange="hjexchange"为默认的exchange，有这个参数发送时可以不用指定exchange -->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="hjexchange" routing-key="wzh"/>
 
     <!-- 利用admin来定义队列,spring会自动根据下面的定义创建队列
     	队列名	是否持久化	是否是排他队列	不使用的时候是否删除	-->
-    <rabbit:queue name="com.ty.test" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
 
-    <!-- 定义Exchange,并且将队列与Exchange绑定,设定Routing Key -->
-    <!-- name为Echange的name -->
-    <rabbit:direct-exchange name="hjexchange" durable="true" auto-delete="false">
+    <rabbit:queue name="server-to-camera-commandqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="server-to-display-commandqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="camera-to-server-markdataqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="server-to-display-markdataqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <!-- 定义Exchange,用于接收camera传过来的数据，传过来后根据mac，从数据库中找到mac并且将队列与Exchange绑定,设定Routing Key -->
+    <rabbit:direct-exchange name="camera-to-server-exchange" durable="true" auto-delete="false">
         <rabbit:bindings>
-            <rabbit:binding key="com.ty.test" queue="com.ty.test"></rabbit:binding>
+            <rabbit:binding key="camera-to-server-markdata" queue="camera-to-server-markdataqueue-1"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:direct-exchange>
+    <!--注：主题类型的转发器非常强大，可以实现其他类型的转发器。当队列绑定#绑定键，可以接受任何消息，类似于fanout转发器。当特殊字符*和#不包含在绑定键中，这个主题转发器就像一个direct类型的转发器。-->
+   <!--定义的topic exchange用于将server接收到的mark发送到display对应的队列-->
+    <rabbit:topic-exchange name="server-to-other-exchange" durable="true" auto-delete="false" id="message-exchange" >
+        <rabbit:bindings>
+            <rabbit:binding queue="server-to-display-commandqueue-1" pattern="server_to_display_command_routing_key_200" />
+            <rabbit:binding queue="server-to-camera-commandqueue-1"  pattern="server_to_camera_command_routing_key_1" />
+            <rabbit:binding queue="server-to-display-markdataqueue-1"  pattern="server_to_display_markdata_routing_key_200" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
 
 </beans>

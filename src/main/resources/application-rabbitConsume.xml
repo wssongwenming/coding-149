@@ -14,25 +14,42 @@
     <rabbit:admin connection-factory="connectionFactory"/>
 
     <!-- 利用admin来定义队列,spring会自动根据下面的定义创建队列
-    	队列名	是否持久化	是否是排他队列	不使用的时候是否删除	-->
-    <rabbit:queue name="com.ty.test" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+         队列名	是否持久化	是否是排他队列	不使用的时候是否删除	-->
 
-    <!-- 定义Exchange,并且将队列与Exchange绑定,设定Routing Key -->
-    <!-- name为Echange的name -->
-    <rabbit:direct-exchange name="hjexchange" durable="true" auto-delete="false">
+    <rabbit:queue name="server-to-camera-commandqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="server-to-display-commandqueue-200" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="camera-to-server-markdataqueue-1" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <rabbit:queue name="server-to-display-markdataqueue-200" auto-delete="false" durable="true" exclusive="false" auto-declare="true"/>
+
+    <!-- 定义Exchange,用于接收camera传过来的数据，传过来后根据mac，从数据库中找到mac并且将队列与Exchange绑定,设定Routing Key -->
+    <rabbit:direct-exchange name="camera-to-server-exchange" durable="true" auto-delete="false">
         <rabbit:bindings>
-            <rabbit:binding key="com.ty.test" queue="com.ty.test"></rabbit:binding>
+            <rabbit:binding key="camera-to-server-markdata" queue="camera-to-server-markdataqueue-1"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:direct-exchange>
+    <!--定义的topic exchange用于将server接收到的mark发送到display对应的队列-->
+    <rabbit:topic-exchange name="server-to-other-exchange" durable="true" auto-delete="false" id="message-exchange" >
+        <rabbit:bindings>
+            <rabbit:binding queue="server-to-display-commandqueue-200" pattern="server-to-display-command-routing-key-200" />
+            <rabbit:binding queue="server-to-camera-commandqueue-1"  pattern="server-to-camera-command-routing-key-1" />
+            <rabbit:binding queue="server-to-display-markdataqueue-200"  pattern="server-to-display-markdata-routing-key-200" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
 
     <!-- 定义消费者,消费消息 -->
     <bean id="directConsumer" class="com.mmall.rabbitmq.DirectConsumer"></bean>
+    <bean id="cameraMarkDataConsumer" class="com.mmall.rabbitmq.CameraMarkDataConsumer"></bean>
 
     <!--开启监听,也可以理解为:
         将消费者与队列进行绑定,这样就会在,当队列有消息的时候,会由绑定的消费者来进行消费,
         也可以算是指定消费者来监听指定的队列.当有消息到达的时候,通知消费者进行消费 -->
     <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual">
         <!-- 注入bean,指定队列 -->
-        <rabbit:listener ref="directConsumer" queues="com.ty.test"/>
+        <rabbit:listener ref="cameraMarkDataConsumer" queues="camera-to-server-markdataqueue-1"/>
+       <!-- <rabbit:listener ref="directConsumer" queues="server-to-camera-commandqueue-1"/>
+        <rabbit:listener ref="directConsumer" queues="server-to-display-commandqueue-200"/>-->
     </rabbit:listener-container>
 </beans>

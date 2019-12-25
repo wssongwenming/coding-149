@@ -425,7 +425,7 @@
                 }
                 var pageSize = $("#pageSize").val();
                 var pageNo = $("#deviceGroupPage .pageNo").val() || 1;
-                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "deviceGroupPage", renderTrainingListAndPage);
+                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "deviceGroupPage", renderDeviceGroupListAndPage);
             } else {
                 showMessage("获取部门下用户列表", result.msg, false);
             }
